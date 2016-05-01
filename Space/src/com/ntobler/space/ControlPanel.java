@@ -23,6 +23,8 @@ public class ControlPanel implements Paintable {
 	
 	private Utility activeUtility;
 	
+	private DeltaVGauge deltaVGauge;
+	
 	
 	
 	public ControlPanel (PhysicalWorkspace w) {
@@ -41,6 +43,8 @@ public class ControlPanel implements Paintable {
 		utilities.add(new Utility(Utility.ORBIT_CALCULATOR));
 		
 		activeUtility = (Utility)utilities.get(0);
+		
+		deltaVGauge = new DeltaVGauge();
 		
 	}
 	
@@ -92,7 +96,7 @@ public class ControlPanel implements Paintable {
         		w.addPhysical(ship.shoot(mouseGamePos));
         	}
 			
-			
+        	deltaVGauge.tick(ship);
 		}
 		
 	}
@@ -117,16 +121,48 @@ public class ControlPanel implements Paintable {
 			paintFuelBar(g2);
 			paintSpeedMeter(g2);
 			
+			
 			Physical lockOn = ship.getLockOn();
 			if (lockOn != null) {
 				Complex pos = w.getRenderTransformer().getScreenPos(lockOn.getPos());
 				double radius = lockOn.getRadius() * w.getRenderTransformer().getZoom();
 				CustomGraphics.drawLockOn(g2, (int) pos.x, (int) pos.y, (int) radius);
+				
+				g2.setTransform(w.getRenderTransformer().getNoScaleTransformation(ship, ship.getLockOn()));
+		    	
+		    	paintShipLockOnTransformed(g2);
+
 			}
+			
+			
+
+	    	
+			
+		}
+	}
+	
+	public void paintShipTranslated(Graphics2D g2) {
+		
+		Physical lockOn = ship.getLockOn();
+		if (lockOn != null) {
+			
+			AffineTransform translatedTransform = g2.getTransform();
+			
+			AffineTransform rotatedTransform = new AffineTransform(translatedTransform);
+			double angle = Geometry.getDirection(ship.getPos(), lockOn.getPos()).getAngle();
+			rotatedTransform.rotate(angle);
+			g2.setTransform(rotatedTransform);
+			
+			paintShipLockOnTransformed(g2);
+			
+			g2.setTransform(translatedTransform);
 		}
 		
-		
-		
+	}
+
+	
+	public void paintShipLockOnTransformed(Graphics2D g2) {
+		deltaVGauge.paint(g2);
 	}
 	
 	private void paintFuelBar(Graphics2D g2) {
@@ -186,9 +222,6 @@ public class ControlPanel implements Paintable {
 		else {
 			g2.drawString("NO LOCK ON", 200, 32);
 		}
-		
-		
-		
 	}
 	
 	

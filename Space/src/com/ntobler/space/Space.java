@@ -77,20 +77,7 @@ public class Space {
             	Complex transformedMousePos = w.getRenderTransformer().getGamePos(mousePos);
             	
             	c.tick(mousePos, pressedKey);
-            	
-            	Ship s = w.getShip();
-            	if (s != null) {
-            		
-            		
-            		
 
-	            	
-	            	
-	            	
-	            	
-	            	
-	            	
-            	}
                 w.tick(((double)tickPeriod * timeFactor) / 1000, transformedMousePos);
                 
                 
@@ -297,7 +284,7 @@ public class Space {
 		earth.setPos(new Complex(0, 15000));
 		earth.setMass(1e14);
 		Orbit.setInOrbit(earth, sun, w, Orbit.CLOCKWHISE);
-		earth.setRadius(64);
+		earth.setRadius(96);
 		w.addPhysical(earth);
 		
 		//Mars (hostile)
@@ -308,9 +295,14 @@ public class Space {
 		mars.setRadius(48);
 		
 		Ship s = new Ship();
-		s.setPos(earth.getPos().plus(new Complex(0, 150)));
+		s.setPos(earth.getPos().plus(new Complex(0, 400)));
 		s.setMass(1000);
 		Orbit.setInOrbit(s, earth, w, Orbit.CLOCKWHISE);
+		
+		/*Ship s = new Ship();
+		s.setPos(sun.getPos().plus(new Complex(0, 400)));
+		s.setMass(1000);
+		Orbit.setInOrbit(s, sun, w, Orbit.CLOCKWHISE);*/
 		
 		w.setShip(s);
 		c.setShip(s);

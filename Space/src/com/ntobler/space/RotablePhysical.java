@@ -2,6 +2,7 @@ package com.ntobler.space;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 
 public class RotablePhysical extends Physical{
 
@@ -18,6 +19,17 @@ public class RotablePhysical extends Physical{
 		super.tick(w, passedTime, mousePos);
 		
 		rotationAngle += rotationSpeed * passedTime;
+	}
+	
+	@Override
+	protected void updateLinked(Physical p) {
+		
+		double distance = this.radius + p.radius;
+		Complex relativePos = Complex.normalFromAngle(p.getLinkingAngle() + this.getRotationAngle()).scalarMultiply(distance);
+		p.setPos(this.getPos().plus(relativePos));
+		double rotationVelocity = this.rotationSpeed * distance;
+		Complex rotationVelocityVector = relativePos.add90deg().normalVector().scalarMultiply(rotationVelocity);
+		p.setVelocity(this.getVelocity().plus(rotationVelocityVector));
 	}
 	
 	@Override
@@ -57,6 +69,13 @@ public class RotablePhysical extends Physical{
 	
 	public void setRandomAngle() {
 		this.rotationAngle = Math.PI * 2 * Math.random();
+	}
+
+	@Override
+	public void link (Physical p) {
+		super.link(p);
+		
+		p.setLinkingAngle(p.getLinkingAngle() - this.rotationAngle);
 	}
 	
 }

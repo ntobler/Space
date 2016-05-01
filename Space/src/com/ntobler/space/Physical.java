@@ -1,6 +1,9 @@
 package com.ntobler.space;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Physical {
 
@@ -19,11 +22,19 @@ public class Physical {
 	
 	private HitPointHolder hitPointHolder;
 	
+	private List<Physical> linkedPhysicals;
+	private boolean linked;
+	private double linkingAngle;
+	
+	
 	public Physical() {
 		this.pos = null;
 		this.velocity = null;
 		this.destroyed = false;
 		this.newVelocity = Complex.ZERO;
+		
+		this.linked = false;
+		this.linkedPhysicals = new ArrayList<Physical>();
 		
 	}
 	
@@ -63,12 +74,6 @@ public class Physical {
 				
 				Complex rVector = p.pos.minus(pos);
 				double r = rVector.abs();
-				/*if (oldPos != null) {
-					double rLine = Geometry.getDistancetoPoint(oldPos, pos , p.getPos());
-					if (rLine > r) {
-						r = rLine;
-					}
-  				}*/
 				proximityReport(w, p, r - p.radius - this.radius, passedTime);
 				
 				if (this.mass > 0) {
@@ -97,6 +102,30 @@ public class Physical {
 			pos = newPos.plus(velocity.scalarMultiply(passedTime));
 			newPos = pos;
 		}
+	}
+	
+	public void moveLinked() {
+		
+		Iterator<Physical> j = linkedPhysicals.iterator();
+		while (j.hasNext()) {
+			Physical p = j.next();
+			
+			double radialVelocity = Orbit.getRadialVelocity(p, this);
+			if (radialVelocity > 0) {
+				p.linked = false;
+				j.remove();
+			}
+			else {
+				updateLinked(p);
+			}
+		}
+	}
+	
+	protected void updateLinked(Physical p) {
+		double distance = this.radius + p.radius;
+		Complex relativePos = Complex.normalFromAngle(p.linkingAngle).scalarMultiply(distance);
+		p.setPos(this.pos.plus(relativePos));
+		p.setVelocity(this.velocity);
 	}
 
 	
@@ -206,4 +235,28 @@ public class Physical {
 	public void setHitPointHolder(HitPointHolder hitPointHolder) {
 		this.hitPointHolder = hitPointHolder;
 	}
-}
+	
+	public void link (Physical p) {
+		
+			linkedPhysicals.add(p);
+			p.linked = true;
+			p.linkingAngle = Geometry.getDirection(this.pos, p.pos).getAngle();
+	}
+	
+	public boolean isLinked() {
+		return linked;
+	}
+	
+	public double getLinkingAngle() {
+		return linkingAngle;
+	}
+
+	public void setLinkingAngle(double linkingAngle) {
+		this.linkingAngle = linkingAngle;
+	}
+	
+	public double getRotationSpeed() {
+		return 0;
+	}
+	
+ }

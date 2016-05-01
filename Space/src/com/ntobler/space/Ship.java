@@ -30,6 +30,17 @@ public class Ship extends RotablePhysical {
 				destroy();
 			}
 		});
+		
+		HitPointHolder hph = new HitPointHolder(100);
+		setHitPointHolder(hph);
+		hph.setListener(new HitPointHolder.HitPointListener() {
+
+			@Override
+			public void onDefeated() {
+				destroy();
+			}
+			
+		});	
 	}
 	
 	@Override
@@ -48,6 +59,25 @@ public class Ship extends RotablePhysical {
 		setRotationAngle(steerDir.getAngle());
 		
 		thruster.tick(passedTime, steerDir, this);
+	}
+	
+	@Override
+	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+		super.proximityReport(w, trigger, distance, passedTime);
+		
+		if (distance < 0) {
+			land(trigger);
+		}
+		
+		
+	}
+	
+	private void land(Physical p) {
+		if (p instanceof Landable) {
+			if (!isLinked()) {
+				((Landable) p).land(this);
+			}
+		}
 	}
 	
 	@Override

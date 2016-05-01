@@ -18,7 +18,7 @@ public class HostilePlanet extends AtmospherePlanet{
 	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
 		super.proximityReport(w, trigger, distance, passedTime);
 		
-		if (distance < 0) {
+		/*if (distance < 0) {
 			if ((trigger.getVelocity() != null) &&
 					(trigger != firedMissile)) {
 				double deltaV = Orbit.getRadialVelocity(this, trigger);
@@ -26,7 +26,7 @@ public class HostilePlanet extends AtmospherePlanet{
 					trigger.destroy();
 				}
 			}
-		}
+		}*/
 		
 		if (distance < MISSILE_RANGE_RADIUS) {
 			w.addPhysical(launchGroundAirMissile(trigger));

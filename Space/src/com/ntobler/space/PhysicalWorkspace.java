@@ -60,7 +60,15 @@ public class PhysicalWorkspace implements Paintable {
 			p.moveToNewPos(passedTime);
 		}
 		
+		for (Physical p: physicals) {
+			p.moveLinked();
+		}
+		
 		tickFixedObjects(passedTime);
+		
+		
+		
+		
 		
 		
 	}
