@@ -7,7 +7,7 @@ public class Planet extends RotablePhysical implements Landable {
 	
 	public Planet() {
 		
-		this.setRotationSpeed(0.5);
+		this.setRotationSpeed(0.25);
 		
 		setRadius(32);
 		

@@ -15,8 +15,8 @@ public class AtmospherePlanet extends Planet {
 
 	public AtmospherePlanet() {
 		super();
-		this.thickness = 64;
-		this.floorFrictionCoefficient = 0.5;
+		this.thickness = 128;
+		this.floorFrictionCoefficient = 1;
 	}
 	
 
@@ -33,7 +33,7 @@ public class AtmospherePlanet extends Planet {
 		
 		double height = p.getPos().minus(getPos()).abs() - getRadius();
 		
-		if (height < thickness) {
+ 		if (height < thickness) {
 		
 			double friction =  height / thickness * floorFrictionCoefficient;
 		

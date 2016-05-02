@@ -292,7 +292,8 @@ public class Space {
 		mars.setPos(new Complex(0, -22500));
 		mars.setMass(1e13);
 		Orbit.setInOrbit(mars, sun, w, Orbit.CLOCKWHISE);
-		mars.setRadius(48);
+		mars.setRadius(64);
+		w.addPhysical(mars);
 		
 		Ship s = new Ship();
 		s.setPos(earth.getPos().plus(new Complex(0, 400)));
