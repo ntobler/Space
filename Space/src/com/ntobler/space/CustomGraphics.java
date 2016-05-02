@@ -23,26 +23,27 @@ public class CustomGraphics {
 		g2.fill(new Rectangle2D.Double(x - (width/2), y - (height/2), (int) (width * progress), height));
 	}
 	
-	public static void drawLockOn(Graphics2D g2, int x, int y, int radius) {
+	public static void drawLockOn(Graphics2D g2, double radius) {
 		
-		int a = radius + 2;
-		int l = 5;
+		double a = radius + 2;
+		double l = 5;
+		
 		
 		//upper right
-		g2.drawLine(x+a, y+a, x+a-l, y+a);	//left
-		g2.drawLine(x+a, y+a, x+a, y+a-l);	//down
+		g2.draw(new Line2D.Double(a, a, a-l, a));	//left
+		g2.draw(new Line2D.Double(a, a, a, a-l));	//down
 		
 		//lower right
-		g2.drawLine(x+a, y-a, x+a, y-a+l);	//up	
-		g2.drawLine(x+a, y-a, x+a-l, y-a);	//left
+		g2.draw(new Line2D.Double(a, -a, a, -a+l));	//up	
+		g2.draw(new Line2D.Double(a, -a, a-l, -a));	//left
 		
 		//lower left
-		g2.drawLine(x-a, y-a, x-a+l, y-a);	//right	
-		g2.drawLine(x-a, y-a, x-a, y-a+l);	//up
+		g2.draw(new Line2D.Double(-a, -a, -a+l, -a));	//right	
+		g2.draw(new Line2D.Double(-a, -a, -a, -a+l));	//up
 		
 		//upper left
-		g2.drawLine(x-a, y+a, x-a, y+a-l);	//down	
-		g2.drawLine(x-a, y+a, x-a+l, y+a);	//right
+		g2.draw(new Line2D.Double(-a, a, -a, a-l));	//down	
+		g2.draw(new Line2D.Double(-a, a, -a+l, a));	//right
 		
 	}
 	
