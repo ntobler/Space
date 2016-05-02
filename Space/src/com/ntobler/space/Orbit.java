@@ -51,10 +51,10 @@ public class Orbit {
 	
 	public static double getProgradeVelocity (Physical orbiting, Physical center) {
 		
-		Complex radialVector = Geometry.getDirection(center.getPos(), orbiting.getPos());
+		Complex radialVector = orbiting.getPos().minus(center.getPos());
 		Complex relativeVelocity = orbiting.getVelocity().minus(center.getVelocity());
 		double angle = Geometry.getAngle(relativeVelocity, radialVector);
-		double progradeVelocity = Math.sin(angle) * orbiting.getVelocity().abs();
+		double progradeVelocity = Math.sin(angle) * relativeVelocity.abs();
 		return progradeVelocity;
 	}
 	
@@ -63,7 +63,7 @@ public class Orbit {
 		Complex radialVector = Geometry.getDirection(center.getPos(), orbiting.getPos());
 		Complex relativeVelocity = orbiting.getVelocity().minus(center.getVelocity());
 		double angle = Geometry.getAngle(relativeVelocity, radialVector);
-		double radialVelocity = Math.cos(angle) * orbiting.getVelocity().abs();
+		double radialVelocity = Math.cos(angle) * relativeVelocity.abs();
 		return radialVelocity;
 	}
 	
@@ -72,7 +72,7 @@ public class Orbit {
 		Complex radialVector = Geometry.getDirection(center.getPos(), orbiting.getPos());
 		Complex relativeVelocity = orbiting.getVelocity().minus(center.getVelocity());
 		double angle = Geometry.getAngle(relativeVelocity, radialVector);
-		double progradeVelocity = Math.sin(angle) * orbiting.getVelocity().abs();
+		double progradeVelocity = Math.sin(angle) * relativeVelocity.abs();
 		Complex progradeNormalVector = radialVector.sub90deg().normalVector();
 		Complex progradeVelocityVector = progradeNormalVector.scalarMultiply(progradeVelocity);
 
@@ -83,7 +83,7 @@ public class Orbit {
 		Complex radialVector = Geometry.getDirection(center.getPos(), orbiting.getPos());
 		Complex relativeVelocity = orbiting.getVelocity().minus(center.getVelocity());
 		double angle = Geometry.getAngle(relativeVelocity, radialVector);
-		double radialVelocity = Math.cos(angle) * orbiting.getVelocity().abs();
+		double radialVelocity = Math.cos(angle) * relativeVelocity.abs();
 		Complex radialNormalVector = radialVector.normalVector();
 		Complex radialVelocityVector = radialNormalVector.scalarMultiply(radialVelocity);
 
