@@ -124,19 +124,17 @@ public class ControlPanel implements Paintable {
 			
 			Physical lockOn = ship.getLockOn();
 			if (lockOn != null) {
-				Complex pos = w.getRenderTransformer().getScreenPos(lockOn.getPos());
 				double radius = lockOn.getRadius() * w.getRenderTransformer().getZoom();
-				CustomGraphics.drawLockOn(g2, (int) pos.x, (int) pos.y, (int) radius);
 				
-				g2.setTransform(w.getRenderTransformer().getNoScaleTransformation(ship, ship.getLockOn()));
-		    	
-		    	paintShipLockOnTransformed(g2);
+				g2.setTransform(w.getRenderTransformer().getNoScaleNoRotationTransformation(lockOn));
+				CustomGraphics.drawLockOn(g2, radius);
+				
+				AffineTransform transform = w.getRenderTransformer().getNoScaleTransformation(ship, lockOn);
+				transform.rotate(- lockOn.getPos().minus(ship.getPos()).getAngle());
+				g2.setTransform(transform);
+				paintShipLockOnTransformed(g2);
 
 			}
-			
-			
-
-	    	
 			
 		}
 	}

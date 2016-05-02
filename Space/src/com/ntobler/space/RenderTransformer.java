@@ -21,49 +21,48 @@ public class RenderTransformer {
 		Complex t;
 		
 		AffineTransform transform = new AffineTransform();
-		
-		
+
 		t = getCenterVector();
 		transform.translate(t.x, t.y);
 		
+		transform.scale(zoom, zoom);
 		
 		transform.rotate(getTransformRotation());
 		
 		t = getTransformVector();
-		
-		transform.scale(zoom, zoom);
 		transform.translate(t.x, t.y);
 		
 		return transform;
 	}
 	
-	public AffineTransform getNoScaleTransformation() {
+	public AffineTransform getNoScaleNoRotationTransformation(Physical p) {
 		
 		AffineTransform transform = getTransformation();
-		Complex t = getTransformVector();
-		transform.translate(-t.x, -t.y);
-		transform.scale(1/zoom, 1/zoom);
+		transform.translate(p.getPos().x, p.getPos().y);
 		transform.rotate(-getTransformRotation());
+		transform.scale(1/zoom, 1/zoom);
 		
 		return transform;
 	}
 	
 	public AffineTransform getNoScaleTransformation(Physical p, Physical dir) {
 		
-		double angle = dir.getPos().minus(p.getPos()).getAngle();
+		double angle = 0;
+		
+		if(dir != null) {
+			angle = dir.getPos().minus(p.getPos()).getAngle();
+		}
 		
 		AffineTransform transform = getTransformation();
 		transform.translate(p.getPos().x, p.getPos().y);
+		
 		transform.scale(1/zoom, 1/zoom);
-		transform.rotate(angle-getTransformRotation());
 		
 		return transform;
 	}
 	
 	private Complex getTransformVector() {
-		
-		Complex centerVector = new Complex (screenDimension.getWidth() / 2, screenDimension.getHeight() / 2);
-	
+
 		Complex transformVector = Complex.ZERO;
 		
 		if (focus != null) {
