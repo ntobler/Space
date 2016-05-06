@@ -1,5 +1,6 @@
 package com.ntobler.space;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -38,16 +39,35 @@ public class Space {
 		
 		game.setCanvas(gameFrame.getCanvas());
 		
-		setKeyBindings();
+		//setKeyBindings();
 		
-		setupMouseListeners();
+		//setupMouseListeners();
+		
+		KeyMapper keyMapper = new KeyMapper();
+		keyMapper.setGame(game);
+		JComponent c = gameFrame.getCanvas();
+		gameFrame.addKeyListener(keyMapper);
+		c.addMouseListener(keyMapper);
+		c.addMouseMotionListener(keyMapper);
+		c.addMouseWheelListener(keyMapper);
+		
+		
+		
+		keyMapper.put(KeyEvent.VK_SPACE, ControlEvent.KEY_EVENT, game.getThrustControl());
+		keyMapper.put(KeyEvent.VK_C, ControlEvent.KEY_EVENT, game.getShootControl());
+		keyMapper.put(KeyEvent.VK_Q, ControlEvent.KEY_EVENT, game.getUtilitySelectControl());
+		keyMapper.put(KeyEvent.VK_E, ControlEvent.KEY_EVENT, game.getWeaponSelectControl());
+		keyMapper.put(KeyEvent.VK_A, ControlEvent.KEY_EVENT, game.getAquiringControl());
+		keyMapper.put(0, ControlEvent.MOUSE_WHEEL_EVENT, game.getZoomControl());
+		
+		
 	}
 	
 	public static double getGameTime() {
 		return game.getTime();
 	}
 
-	private static void setKeyBindings() {
+	/*private static void setKeyBindings() {
 		
 		JComponent c = gameFrame.getCanvas();
 		
@@ -63,7 +83,7 @@ public class Space {
 		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), Game.AQUIRE_RELEASE);
 		
 		c.setActionMap(game.getActionMap());
-	}
+	}*/
 	
 	
 	private static void setupMouseListeners() {
@@ -84,7 +104,7 @@ public class Space {
 			public void keyTyped(KeyEvent arg0) {
 			}
 			
-		});*/
+		});
 		
 		gameFrame.getCanvas().addMouseMotionListener(new MouseMotionListener() {
 
@@ -102,7 +122,7 @@ public class Space {
 			
 		});
 		
-		/*gameFrame.addMouseWheelListener(new MouseWheelListener() {
+		gameFrame.addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent arg0) {

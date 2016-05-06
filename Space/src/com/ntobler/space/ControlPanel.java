@@ -38,6 +38,8 @@ public class ControlPanel implements Paintable {
 	private boolean shooting = false;
 	private boolean thrusting = false;
 	private boolean aquiring= false;
+	private boolean weaponSelecting = false;
+	private boolean utilitySelecting = false;
 	
 	
 	public ControlPanel (Workspace w) {
@@ -80,25 +82,23 @@ public class ControlPanel implements Paintable {
         		ship.setThrust(0);
         	}
 			
-        	if (pressedKey == KeyEvent.VK_Q) {
+        	if (weaponSelecting) {
         		weaponMenu.setPos(shipPos);
     			double cursorAngle = mouseScreenPos.minus(shipPos).getAngle();
     			weaponMenu.selectItem(cursorAngle);
     			weaponMenu.setVisible(true);
     			ship.setWeapon((Weapon) weaponMenu.getSelectedItem());
-    			
         	}
         	else {
         		weaponMenu.setVisible(false);
         	}
         	
-        	if (pressedKey == KeyEvent.VK_E) {
+        	if (utilitySelecting) {
         		utilityMenu.setPos(shipPos);
     			double cursorAngle = mouseScreenPos.minus(shipPos).getAngle();
     			utilityMenu.selectItem(cursorAngle);
     			utilityMenu.setVisible(true);
     			activeUtility = (Utility) utilityMenu.getSelectedItem();
-    			
         	}
         	else {
         		utilityMenu.setVisible(false);
@@ -249,7 +249,15 @@ public class ControlPanel implements Paintable {
 
 	public void setAquiring(boolean aquiring) {
 		this.aquiring = aquiring;
+	}
+
+	public void setWeaponSelecting(boolean weaponSelecting) {
+		this.weaponSelecting = weaponSelecting;
 		
+	}
+
+	public void setUtilitySelecting(boolean utilitySelecting) {
+		this.utilitySelecting = utilitySelecting;
 	}
 
 

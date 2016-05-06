@@ -2,6 +2,7 @@ package com.ntobler.space;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -149,9 +150,71 @@ public class Game {
 		setShip(s);
 	}
 	
-	public void setMousePos(Complex mousePos) {
-		this.mousePos = mousePos;
+	public void setMousePos(Point mousePos) {
+		this.mousePos = new Complex(mousePos.getX(), mousePos.getY());
 	}
+	
+	
+	
+	public ControlEvent getShootControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setShooting(state);
+			}
+		};
+	}
+	
+	public ControlEvent getThrustControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setThrusting(state);
+			}
+		};
+	}
+	
+	public ControlEvent getAquiringControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setAquiring(state);
+			}
+		};
+	}
+	
+	public ControlEvent getWeaponSelectControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setWeaponSelecting(state);
+			}
+		};
+	}
+	
+	public ControlEvent getUtilitySelectControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setUtilitySelecting(state);
+			}
+		};
+	}
+	
+	public ControlEvent getZoomControl() {
+		return new ControlEvent(){
+			@Override
+			public void onScaleAction(int value){
+				camera.addZoomTicks(-value);
+			}
+		};
+	}
+	
+	
+	
+	
+	
+	
 	
 	private ActionMap actionMap;
 	
@@ -218,4 +281,6 @@ public class Game {
 
 		return actionMap;
 	}
+
+	
 }

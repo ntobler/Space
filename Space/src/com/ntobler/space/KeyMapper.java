@@ -1,5 +1,6 @@
 package com.ntobler.space;
 
+import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -12,153 +13,94 @@ import java.util.Map;
 
 public class KeyMapper implements KeyListener, MouseMotionListener, MouseWheelListener, MouseListener{
 
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-		
+	private Map<Integer, ControlEvent> eventMap;
 	
-	/*private Map<Integer, Controlable> eventMap;
+	private Game game;
 	
-	public KeyMapper() {
-		
-		eventMap = new HashMap<Integer, Controlable>();
-		
-		
-		
-		
-		
+	public KeyMapper() {		
+		eventMap = new HashMap<Integer, ControlEvent>();
 	}
 	
-	public void put(int event, Controlable controlable) {
-		eventMap.put(event, controlable);
-	}
-
-	private void passEventStart(int event) {
-		Controlable receptor = eventMap.get(event);
-		receptor.onEventStart(event);
+	public void put(int event, int type, ControlEvent controlEvent) {
+		eventMap.put(event + (type * 65536), controlEvent);
 	}
 	
-	private void passEventStop(int event) {
-		Controlable receptor = eventMap.get(event);
-		receptor.onEventStart(event);
+	public void setGame (Game game) {
+		this.game = game;
+	}
+	
+	private void passEvent(int event, int type, int value) {
+		ControlEvent receptor = eventMap.get(event + (type * 65536));
+		if (receptor != null) {
+			receptor.onScaleAction(value);
+		}
 	}
 	
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {		
+	public void mouseClicked(MouseEvent e) {
+		//System.out.println("mouse clicked" + e.getID());
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		//System.out.println("mouse entered" + e.getID());
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		//System.out.println("mouse exited" + e.getID());
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		passEventStart(MouseEvent.MOUSE_PRESSED);
+		//System.out.println("mouse pressed" + e.getID());
+		passEvent(e.getButton(), ControlEvent.MOUSE_EVENT, 1);
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		passEventStop(MouseEvent.MOUSE_RELEASED);
+		//System.out.println("mouse released" + e.getID());
+		passEvent(e.getButton(), ControlEvent.MOUSE_EVENT, 0);
 		
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		passEventStart(MouseWheelEvent.MOUSE_WHEEL);
+		System.out.println("wheel" + arg0.getWheelRotation());
+		passEvent(0, ControlEvent.MOUSE_WHEEL_EVENT, arg0.getWheelRotation());
 		
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		//System.out.println("mouse dragged" + e.getID());
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		passEventStart(MouseEvent.MOUSE_MOVED);
+		//System.out.println("mouse moved" + e.getID());
+		game.setMousePos(e.getPoint());
 		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		passEventStart(e.getKeyCode());
+		//System.out.println("key pressed" + e.getID());
+		passEvent(e.getKeyCode(), ControlEvent.KEY_EVENT, ControlEvent.PRESSED);
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		passEventStop(e.getKeyCode());
+		//System.out.println("key released" + e.getID());
+		passEvent(e.getKeyCode(), ControlEvent.KEY_EVENT, ControlEvent.RELEASED);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-	}*/
+		//System.out.println("key typed" + e.getID());
+	}
 	
 }
