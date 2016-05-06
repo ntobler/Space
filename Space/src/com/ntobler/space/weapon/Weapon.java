@@ -34,10 +34,8 @@ public class Weapon implements RadialMenu.Listable {
 		boolean bulletReady = Space.getGameTime() > (lastFiredTime + fireRatePeriode);
 		
 		if (notEmpty && bulletReady) {
-			lastFiredTime = Space.getGameTime();
 			return true;
 		}
-		
 		return false;
 	}
 

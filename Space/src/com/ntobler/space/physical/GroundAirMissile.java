@@ -13,7 +13,9 @@ import com.ntobler.space.utility.Thruster.ThrusterListener;
 
 public class GroundAirMissile extends Missile {
 	
-	private static final double MAX_THRUST = 500;
+	private static final double MEAN_ACCELERATION = 200;
+	
+	private static final double MAX_THRUST = 200;
 	private static final double MASS = 1;
 	private static final int DAMAGE = 50;
 	
@@ -22,6 +24,8 @@ public class GroundAirMissile extends Missile {
 	
 	private final Physical origin;
 	private final Physical lockOn;
+	
+	private Complex relativeHitPos;
 	
 	public GroundAirMissile (Physical origin, Physical lockOn) throws Exception {
 	
@@ -38,7 +42,7 @@ public class GroundAirMissile extends Missile {
 		setDamage(DAMAGE);
 		
  		thruster = new Thruster();
-		thruster.setFuel(1000);
+		thruster.setFuel(2000);
 		thruster.setThrust(MAX_THRUST);
 		thruster.setListener(new Thruster.ThrusterListener() {
 			@Override
@@ -48,38 +52,28 @@ public class GroundAirMissile extends Missile {
 		});
 	} 
 	
+	@Override
 	public void tick(Workspace w, double passedTime, Complex mousePos) {	
 		super.tick(w, passedTime, mousePos);
 		
-		/*lockOnDir = Geometry.getDirection(this.getPos(), lockOn.getPos());
-		double deltaV = Orbit.getRadialVelocity(this, origin);
-		if(deltaV < -5) {*/
+		Complex lockOnVector = lockOn.getPos().minus(this.getPos());
 		
-		Complex radialDir = Geometry.getDirection(this.getPos(), lockOn.getPos());
-		Complex progradeDir = radialDir.sub90deg();
-		double vRadial = Orbit.getRadialVelocity(this, lockOn);
-		double vPrograde = Orbit.getProgradeVelocity(this, lockOn);
+		double lockOnVelocity = lockOn.getVelocity().minus(this.getVelocity()).abs();
 		
-		double progradeFactor = 0.5;
-		double radialFactor = 1;
+		double hitTime = lockOnVelocity / MEAN_ACCELERATION;
 		
-		if (vPrograde > 50) {
-			vPrograde = 50;
-		}
-		if (vPrograde < -50) {
-			vPrograde = -50;
-		}
+		Complex a = lockOnVector.plus(lockOn.getVelocity().minus(this.getVelocity()).scalarMultiply(hitTime)).scalarDivide(hitTime * hitTime);
 		
-		steerDir = radialDir.scalarMultiply(radialFactor).plus(progradeDir.scalarMultiply(progradeFactor)).normalVector();
+		steerDir = a.normalVector();
 		
-		if(vRadial < -5) {
-			thruster.setThrust(MAX_THRUST);
-		}
-		else {
-			thruster.setThrust(0);
-		}
+		double thrust = a.abs();
 		
+		thruster.setThrust(thrust);
+	
 		thruster.tick(passedTime, steerDir, this);
+		
+		Complex lockOnDistance = lockOn.getVelocity().scalarMultiply(hitTime);
+		relativeHitPos = lockOnVector.plus(lockOnDistance);
 	}
 	
 	public void onDestroyed(Workspace w) {
@@ -90,15 +84,21 @@ public class GroundAirMissile extends Missile {
 	public void paintTranslated(Graphics2D g2) {
 		super.paintTranslated(g2);
 		
-		g2.setPaint(Color.BLUE);
+		/*g2.setPaint(Color.BLUE);
 		Complex v = this.getVelocity();
 		g2.draw(new Line2D.Double(0, 0, v.x, v.y));
-		g2.setPaint(Color.RED);
 		
+		g2.setPaint(Color.RED);
 		if (steerDir != null) {
 			g2.draw(new Line2D.Double(0, 0, steerDir.x * 16, steerDir.y*16));
-			g2.setPaint(Color.WHITE);
 		}
+		
+		g2.setPaint(Color.GREEN);
+		if (relativeHitPos != null) {
+			g2.draw(new Line2D.Double(0, 0, relativeHitPos.x, relativeHitPos.y));
+		}
+		g2.setPaint(Color.WHITE);*/
+		
 	}
 	
 	@Override

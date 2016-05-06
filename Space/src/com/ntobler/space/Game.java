@@ -135,6 +135,12 @@ public class Game {
 		mars.setRadius(64);
 		workspace.addPhysical(mars);
 		
+		/*Ship s = new Ship();
+		s.setPos(mars.getPos().plus(new Complex(0, 400)));
+		s.setMass(1000);
+		Orbit.setInOrbit(s, mars, workspace, Orbit.CLOCKWHISE);
+		workspace.addPhysical(s);*/
+		
 		Ship s = new Ship();
 		s.setPos(earth.getPos().plus(new Complex(0, 400)));
 		s.setMass(1000);
@@ -161,6 +167,15 @@ public class Game {
 			@Override
 			public void onStateAction(boolean state){
 				controlPanel.setShooting(state);
+			}
+		};
+	}
+	
+	public ControlEvent getSecondaryShootControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				controlPanel.setSecondaryShooting(state);
 			}
 		};
 	}

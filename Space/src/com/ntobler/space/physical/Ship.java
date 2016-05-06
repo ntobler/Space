@@ -18,6 +18,7 @@ import com.ntobler.space.weapon.Weapon;
 public class Ship extends RotablePhysical implements Focusable {
 
 	private final double MAX_FUEL = 10000;
+	private final int HEALTH = 1000;
 	private final double RADIUS = 6;
 	
 	private Complex steerDir;
@@ -25,10 +26,13 @@ public class Ship extends RotablePhysical implements Focusable {
 	private Physical lockOn;
 	
 	private Weapon weapon;
+	private Weapon secondaryWeapon;
 	
 	private Thruster thruster;
 	
 	public Ship () {
+		
+		secondaryWeapon = new Weapon(Weapon.GUN, 1000, 0.1);
 		
 		setRadius(RADIUS);
 		
@@ -43,7 +47,7 @@ public class Ship extends RotablePhysical implements Focusable {
 			}
 		});
 		
-		HitPointHolder hph = new HitPointHolder(100);
+		HitPointHolder hph = new HitPointHolder(HEALTH);
 		setHitPointHolder(hph);
 		hph.setListener(new HitPointHolder.HitPointListener() {
 
@@ -155,6 +159,23 @@ public class Ship extends RotablePhysical implements Focusable {
 		return null;
 	}
 	
+	
+	public Physical secondaryWeapon(Complex pos) {
+		Missile m = null;
+		if (secondaryWeapon.isAvailable()) {
+			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
+			try {
+				m = new Bullet(this, launchDir);
+				secondaryWeapon.use();
+			} catch (Exception e) {
+			}
+		}
+
+		return m;
+	}
+	
+	
+	
 	private Physical launchAimMissile(Complex pos) {
 		
 		AimMissile a = null;
@@ -162,6 +183,7 @@ public class Ship extends RotablePhysical implements Focusable {
 			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
 			try {
 				a = new AimMissile(this, lockOn, launchDir);
+				weapon.use();
 			} catch (Exception e) {
 			}
 		}
@@ -169,13 +191,14 @@ public class Ship extends RotablePhysical implements Focusable {
 		return a;
 	}
 	
-	private Physical shootGun(Complex pos) {
+	public Physical shootGun(Complex pos) {
 		
 		Missile m = null;
 		if (weapon.isAvailable()) {
 			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
 			try {
 				m = new Bullet(this, launchDir);
+				weapon.use();
 			} catch (Exception e) {
 			}
 		}
@@ -190,6 +213,11 @@ public class Ship extends RotablePhysical implements Focusable {
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
+	
+	public void setSecondaryWeapon(Weapon secondaryWeapon) {
+		this.secondaryWeapon = secondaryWeapon;
+	}
+	
 
 	@Override
 	public Point2D getPosition() {
@@ -200,7 +228,7 @@ public class Ship extends RotablePhysical implements Focusable {
 	public double getRotation() {
 
 		if (lockOn != null) {
-			return Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+			return 0;//Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
 		}
 		else {
 			return 0;

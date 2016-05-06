@@ -36,6 +36,7 @@ public class ControlPanel implements Paintable {
 	
 	
 	private boolean shooting = false;
+	private boolean secondaryShooting = false;
 	private boolean thrusting = false;
 	private boolean aquiring= false;
 	private boolean weaponSelecting = false;
@@ -105,8 +106,10 @@ public class ControlPanel implements Paintable {
         	}
         	
         	if (shooting) {
-        		
         		w.addPhysical(ship.shoot(mouseGamePos));
+        	}
+        	if (secondaryShooting) {
+        		w.addPhysical(ship.shootGun(mouseGamePos));
         	}
 			
         	deltaVGauge.tick(ship);
@@ -241,6 +244,10 @@ public class ControlPanel implements Paintable {
 	
 	public void setShooting(boolean shooting) {
 		this.shooting = shooting;
+	}
+	
+	public void setSecondaryShooting(boolean secondaryShooting) {
+		this.secondaryShooting = secondaryShooting;
 	}
 	
 	public void setThrusting(boolean thrusting) {

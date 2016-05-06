@@ -16,7 +16,7 @@ public class Planet extends RotablePhysical implements Landable {
 		
 		setRadius(32);
 		
-		HitPointHolder hph = new HitPointHolder(100);
+		HitPointHolder hph = new HitPointHolder(1000);
 		setHitPointHolder(hph);
 		hph.setListener(new HitPointHolder.HitPointListener() {
 
@@ -63,10 +63,6 @@ public class Planet extends RotablePhysical implements Landable {
 	
 	public void onDestroyed(Workspace w) {
 		w.addFixedObject(new Explosion(this, 100));
-	}
-	
-	public void setHitpoints(int hitpoints) {
-		
 	}
 
 	@Override

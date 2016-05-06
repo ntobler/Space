@@ -9,7 +9,7 @@ public class Bullet extends Missile {
 	
 	private static final double INITIAL_VELOCITY = 500;//200;
 	private static final double MASS = 1;
-	private static final int DAMAGE = 10;
+	private static final int DAMAGE = 2;
 
 	private static final double LIFE_SPAN = 30;
 	private final double timeSinceLaunch;

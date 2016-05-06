@@ -5,15 +5,14 @@ import com.ntobler.space.weapon.Weapon;
 
 public class HostilePlanet extends AtmospherePlanet{
 
-	private static final double MISSILE_RANGE_RADIUS = 500;
+	private static final double MISSILE_RANGE_RADIUS = 1000;
 
 	private Weapon weapon;
 	private Physical firedMissile = null;
 	
 	public HostilePlanet() {
 		super();
-		
-		weapon = new Weapon(Weapon.GROUND_AIR_MISSILE, 10, 5);
+		weapon = new Weapon(Weapon.GROUND_AIR_MISSILE, 100, 2);
 		
 	}
 
@@ -43,6 +42,7 @@ public class HostilePlanet extends AtmospherePlanet{
 		if ((lockOn != null) && weapon.isAvailable()) {
 			try {
 				m = new GroundAirMissile(this, lockOn);
+				weapon.use();
 				firedMissile = m;
 			} catch (Exception e) {
 				m = null;

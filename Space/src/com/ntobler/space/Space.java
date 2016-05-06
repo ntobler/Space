@@ -55,6 +55,7 @@ public class Space {
 		
 		keyMapper.put(KeyEvent.VK_SPACE, ControlEvent.KEY_EVENT, game.getThrustControl());
 		keyMapper.put(KeyEvent.VK_C, ControlEvent.KEY_EVENT, game.getShootControl());
+		keyMapper.put(KeyEvent.VK_X, ControlEvent.KEY_EVENT, game.getSecondaryShootControl());
 		keyMapper.put(KeyEvent.VK_Q, ControlEvent.KEY_EVENT, game.getUtilitySelectControl());
 		keyMapper.put(KeyEvent.VK_E, ControlEvent.KEY_EVENT, game.getWeaponSelectControl());
 		keyMapper.put(KeyEvent.VK_A, ControlEvent.KEY_EVENT, game.getAquiringControl());
