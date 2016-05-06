@@ -1,8 +1,12 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.MovingObject;
 
 public class Explosion extends MovingObject {
 

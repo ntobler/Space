@@ -1,4 +1,8 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.Workspace;
+import com.ntobler.space.Space;
 
 public class Bullet extends Missile {
 
@@ -8,7 +12,7 @@ public class Bullet extends Missile {
 	private static final int DAMAGE = 10;
 
 	private static final double LIFE_SPAN = 30;
-	private final double launchTime;
+	private final double timeSinceLaunch;
 	
 	public Bullet(Physical origin, Complex launchDir) throws Exception {
 		
@@ -16,16 +20,16 @@ public class Bullet extends Missile {
 		
 		setDamage(DAMAGE);
 		
-		this.launchTime = Space.getTime();
+		this.timeSinceLaunch = 0;
 		
 		//this.addVelocity(launchDir.normalVector().scalarMultiply(SPEED));
 	}
 	
 	@Override
-	public void tick(PhysicalWorkspace w, double passedTime, Complex mousePos) {	
+	public void tick(Workspace w, double passedTime, Complex mousePos) {	
 		super.tick(w, passedTime, mousePos);
 		
-		if (Space.getTime() > (launchTime + LIFE_SPAN)) {
+		if (timeSinceLaunch > LIFE_SPAN) {
 			this.destroy();
 		}
 	}

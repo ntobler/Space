@@ -1,5 +1,9 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 import java.awt.Graphics2D;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.Workspace;
 
 public class Missile extends Physical {
 	
@@ -22,7 +26,7 @@ public class Missile extends Physical {
 	}
 	
 	@Override
-	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+	protected void proximityReport(Workspace w, Physical trigger, double distance, double passedTime) {
 		super.proximityReport(w, trigger, distance, passedTime);
 		if (distance < 0) {
 			if (trigger != origin) {

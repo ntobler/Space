@@ -1,7 +1,9 @@
-package com.ntobler.space;
+package com.ntobler.space.utility;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+
+import com.ntobler.space.CustomGraphics;
 
 public class HitPointHolder {
 

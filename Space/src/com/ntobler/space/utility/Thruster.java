@@ -1,6 +1,10 @@
-package com.ntobler.space;
+package com.ntobler.space.utility;
 
 import java.awt.Graphics2D;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.ThrustAnimation;
+import com.ntobler.space.physical.Physical;
 
 public class Thruster {
 

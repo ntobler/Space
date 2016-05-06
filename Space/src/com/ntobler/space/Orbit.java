@@ -1,5 +1,7 @@
 package com.ntobler.space;
 
+import com.ntobler.space.physical.Physical;
+
 public class Orbit {
 
 	public final static boolean CLOCKWHISE = false;
@@ -17,7 +19,7 @@ public class Orbit {
 		return progradeNormalVector;
 	}
 	
-	public static Complex getRoundOrbitVelocityVector(Physical orbiting, Physical center, PhysicalWorkspace w, boolean direction) {
+	public static Complex getRoundOrbitVelocityVector(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
 		Complex rVector = orbiting.getPos().minus(center.getPos());
 		double r = rVector.abs();
@@ -33,7 +35,7 @@ public class Orbit {
 		
 	}
 	
-	public static void setInOrbit(Physical orbiting, Physical center, PhysicalWorkspace w, boolean direction) {
+	public static void setInOrbit(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
 		Complex v = getRoundOrbitVelocityVector(orbiting, center, w, direction);
 		
@@ -41,7 +43,7 @@ public class Orbit {
 		
 	}
 	
-	public static Complex getRoundOrbitalDeltaV(Physical orbiting, Physical center, PhysicalWorkspace w, boolean direction) {
+	public static Complex getRoundOrbitalDeltaV(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
 		Complex v = getRoundOrbitVelocityVector(orbiting, center, w, direction);
 		Complex deltaV = v.minus(orbiting.getVelocity());

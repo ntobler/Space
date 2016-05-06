@@ -1,14 +1,17 @@
 package com.ntobler.space;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PhysicalWorkspace implements Paintable {
+import com.ntobler.space.physical.Physical;
+import com.ntobler.space.physical.Ship;
+import com.ntobler.space.render.Camera;
+import com.ntobler.space.render.Paintable;
 
-	//private float xSize;
-	//private float ySize;
+public class Workspace implements Paintable {
 	
 	private double getGravitationalConstant;
 
@@ -21,10 +24,10 @@ public class PhysicalWorkspace implements Paintable {
 	
 	private Ship ship;
 	
-	RenderTransformer renderTransformer;
+	Camera camera;
 	
-	public PhysicalWorkspace(RenderTransformer renderTransformer) {
-		this.renderTransformer = renderTransformer;
+	public Workspace(Camera camera) {
+		this.camera = camera;
 
 		getGravitationalConstant = 1e2;
 		
@@ -65,11 +68,6 @@ public class PhysicalWorkspace implements Paintable {
 		}
 		
 		tickFixedObjects(passedTime);
-		
-		
-		
-		
-		
 		
 	}
 	
@@ -137,11 +135,10 @@ public class PhysicalWorkspace implements Paintable {
 
 	@Override
 	public void paint(Graphics2D g2) {
-		// TODO Auto-generated method stub
 		
 		AffineTransform normalTransform = g2.getTransform();
 		
-		AffineTransform gameTransform = renderTransformer.getTransformation();
+		AffineTransform gameTransform = camera.getTransformation();
     	g2.setTransform(gameTransform);
     	
     	for (Physical p: physicals) {
@@ -156,8 +153,8 @@ public class PhysicalWorkspace implements Paintable {
 			
 	}
 	
-	public RenderTransformer getRenderTransformer() {
-		return renderTransformer;
+	public Camera getCamera() {
+		return camera;
 	}
 	
 	public Ship getShip() {
@@ -167,26 +164,9 @@ public class PhysicalWorkspace implements Paintable {
 	public void setShip(Ship ship) {
 		this.ship = ship;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-
-	
-
-	
-	
-	
-	
+	@Override
+	public void setImageDimension(Dimension dimension) {
+	}
+		
 }

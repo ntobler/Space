@@ -1,9 +1,21 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 
-public class Ship extends RotablePhysical {
+import com.ntobler.space.Complex;
+import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.Geometry;
+import com.ntobler.space.Workspace;
+import com.ntobler.space.render.Focusable;
+import com.ntobler.space.utility.HitPointHolder;
+import com.ntobler.space.utility.Thruster;
+import com.ntobler.space.utility.HitPointHolder.HitPointListener;
+import com.ntobler.space.utility.Thruster.ThrusterListener;
+import com.ntobler.space.weapon.Weapon;
+
+public class Ship extends RotablePhysical implements Focusable {
 
 	private final double MAX_FUEL = 10000;
 	private final double RADIUS = 6;
@@ -44,7 +56,7 @@ public class Ship extends RotablePhysical {
 	}
 	
 	@Override
-	public void tick(PhysicalWorkspace w, double passedTime, Complex mousePos) {
+	public void tick(Workspace w, double passedTime, Complex mousePos) {
 		super.tick(w, passedTime, mousePos);
 		
 		
@@ -62,7 +74,7 @@ public class Ship extends RotablePhysical {
 	}
 	
 	@Override
-	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+	protected void proximityReport(Workspace w, Physical trigger, double distance, double passedTime) {
 		super.proximityReport(w, trigger, distance, passedTime);
 		
 		if (distance < 0) {
@@ -81,7 +93,7 @@ public class Ship extends RotablePhysical {
 	}
 	
 	@Override
-	public void onDestroyed(PhysicalWorkspace w) {
+	public void onDestroyed(Workspace w) {
 		w.addFixedObject(new Explosion(this, 50));
 		w.setShip(null);
 	}
@@ -177,6 +189,23 @@ public class Ship extends RotablePhysical {
 
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
+	}
+
+	@Override
+	public Point2D getPosition() {
+		return new Point2D.Double(getX(), getY());
+	}
+
+	@Override
+	public double getRotation() {
+
+		if (lockOn != null) {
+			return Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+		}
+		else {
+			return 0;
+		}
+
 	}
 	
 	

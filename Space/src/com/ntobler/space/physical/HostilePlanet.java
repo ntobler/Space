@@ -1,4 +1,7 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
+
+import com.ntobler.space.Workspace;
+import com.ntobler.space.weapon.Weapon;
 
 public class HostilePlanet extends AtmospherePlanet{
 
@@ -15,7 +18,7 @@ public class HostilePlanet extends AtmospherePlanet{
 	}
 
 	@Override
-	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+	protected void proximityReport(Workspace w, Physical trigger, double distance, double passedTime) {
 		super.proximityReport(w, trigger, distance, passedTime);
 		
 		/*if (distance < 0) {

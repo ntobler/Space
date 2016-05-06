@@ -1,9 +1,13 @@
-package com.ntobler.space;
+package com.ntobler.space.utility;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+
+import com.ntobler.space.Orbit;
+import com.ntobler.space.physical.Physical;
+import com.ntobler.space.physical.Ship;
 
 public class DeltaVGauge {
 

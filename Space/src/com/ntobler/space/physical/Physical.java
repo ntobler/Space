@@ -1,9 +1,15 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.Geometry;
+import com.ntobler.space.Orbit;
+import com.ntobler.space.Workspace;
+import com.ntobler.space.utility.HitPointHolder;
 
 public class Physical {
 
@@ -64,7 +70,7 @@ public class Physical {
 		return split;
 	}
 	
-	public void tick(PhysicalWorkspace w, double passedTime, Complex mousePos) {
+	public void tick(Workspace w, double passedTime, Complex mousePos) {
 		
 		if (velocity != null) {
 			
@@ -129,11 +135,11 @@ public class Physical {
 	}
 
 	
-	protected void onCriticalDistancedReached(PhysicalWorkspace w, Physical trigger) {
+	protected void onCriticalDistancedReached(Workspace w, Physical trigger) {
 		
 	}
 	
-	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+	protected void proximityReport(Workspace w, Physical trigger, double distance, double passedTime) {
 		
 	}
 	
@@ -149,7 +155,7 @@ public class Physical {
 		}
 	}
 	
-	public void onDestroyed(PhysicalWorkspace w) {
+	public void onDestroyed(Workspace w) {
 		
 	}
 	

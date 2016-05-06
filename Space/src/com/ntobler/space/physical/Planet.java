@@ -1,7 +1,12 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+
+import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.Workspace;
+import com.ntobler.space.utility.HitPointHolder;
+import com.ntobler.space.utility.HitPointHolder.HitPointListener;
 
 public class Planet extends RotablePhysical implements Landable {
 	
@@ -37,12 +42,12 @@ public class Planet extends RotablePhysical implements Landable {
 		getHitPointHolder().paintHitBar(g2);
 	}
 
-	protected void onCriticalDistancedReached(PhysicalWorkspace w, Physical trigger) {
+	protected void onCriticalDistancedReached(Workspace w, Physical trigger) {
 		//trigger.destroy();
 	}
 	
 	@Override
-	protected void proximityReport(PhysicalWorkspace w, Physical trigger, double distance, double passedTime) {
+	protected void proximityReport(Workspace w, Physical trigger, double distance, double passedTime) {
 		super.proximityReport(w, trigger, distance, passedTime);
 		
 		/*if (distance < 0) {
@@ -56,7 +61,7 @@ public class Planet extends RotablePhysical implements Landable {
 		}*/
 	}
 	
-	public void onDestroyed(PhysicalWorkspace w) {
+	public void onDestroyed(Workspace w) {
 		w.addFixedObject(new Explosion(this, 100));
 	}
 	

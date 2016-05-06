@@ -1,7 +1,13 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.Geometry;
+import com.ntobler.space.Workspace;
+import com.ntobler.space.utility.Thruster;
+import com.ntobler.space.utility.Thruster.ThrusterListener;
 
 public class AimMissile extends Missile {
 	
@@ -35,7 +41,7 @@ public class AimMissile extends Missile {
 	} 
 	
 	@Override
-	public void tick(PhysicalWorkspace w, double passedTime, Complex mousePos) {	
+	public void tick(Workspace w, double passedTime, Complex mousePos) {	
 		super.tick(w, passedTime, mousePos);
 		
 		Complex lockOnDir = Geometry.getDirection(this.getPos(), lockOn.getPos());
@@ -61,7 +67,7 @@ public class AimMissile extends Missile {
 	}
 	
 	@Override
-	public void onDestroyed(PhysicalWorkspace w) {
+	public void onDestroyed(Workspace w) {
 		w.addFixedObject(new Explosion(this, 50));
 	}
 }

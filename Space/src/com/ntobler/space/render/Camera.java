@@ -1,36 +1,46 @@
-package com.ntobler.space;
+package com.ntobler.space.render;
 
 import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
-public class RenderTransformer {
+import com.ntobler.space.Complex;
+import com.ntobler.space.Geometry;
+import com.ntobler.space.physical.Physical;
+import com.ntobler.space.physical.Ship;
+
+public class Camera {
 
 	private Dimension screenDimension;
-	private Physical focus;
-	private int zoomTicks = 0;
-	private double zoom = 1;
+	private Focusable focus;
 	
-	public RenderTransformer (Dimension screenDimension) {
+	private int zoomTicks;
+	private double zoom;
+	
+	public Camera (Dimension screenDimension) {
+		
 		this.screenDimension = screenDimension;
+		
+		zoom = 1;
+		zoomTicks = 0;
 	}
 	
 	public AffineTransform getTransformation() {
 		
-		Complex t;
+		Point2D t;
 		
 		AffineTransform transform = new AffineTransform();
 
 		t = getCenterVector();
-		transform.translate(t.x, t.y);
+		transform.translate(t.getX(), t.getY());
 		
 		transform.scale(zoom, zoom);
 		
-		transform.rotate(getTransformRotation());
+		transform.rotate(focus.getRotation());
 		
-		t = getTransformVector();
-		transform.translate(t.x, t.y);
+		t = focus.getPosition();
+		transform.translate(-t.getX(), -t.getY());
 		
 		return transform;
 	}
@@ -39,7 +49,7 @@ public class RenderTransformer {
 		
 		AffineTransform transform = getTransformation();
 		transform.translate(p.getPos().x, p.getPos().y);
-		transform.rotate(-getTransformRotation());
+		transform.rotate(-focus.getRotation());
 		transform.scale(1/zoom, 1/zoom);
 		
 		return transform;
@@ -61,36 +71,11 @@ public class RenderTransformer {
 		return transform;
 	}
 	
-	private Complex getTransformVector() {
-
-		Complex transformVector = Complex.ZERO;
-		
-		if (focus != null) {
-			transformVector = focus.getPos().scalarMultiply(-1);
-		}
-		return transformVector;
-	}
-	
-	private Complex getCenterVector() {
+	private Point2D getCenterVector() {
 	
 		Complex centerVector = new Complex (screenDimension.getWidth() / 2, screenDimension.getHeight() / 2);
-		return centerVector;
-	}
-	
-	private double getTransformRotation() {
-		
-		if (focus != null) {
-			//if (focus.getClass().isAssignableFrom(Ship.class)) {
-				Ship ship = (Ship) focus;
-				Physical lockOn = ship.getLockOn();
-				if (lockOn!= null) {
-					return Geometry.getDirection(ship.getPos(), lockOn.getPos()).getAngle();
-				}
-				
-			//}
-		}
-		
-		return 0;
+		Point2D p = new Point2D.Double(centerVector.x, centerVector.y); 
+		return p;
 	}
 	
 	public Complex getGamePos(Complex mousePos) {
@@ -102,7 +87,6 @@ public class RenderTransformer {
 		try {
 			gamePoint = getTransformation().inverseTransform(mousePoint, null);
 		} catch (NoninvertibleTransformException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			gamePoint = new Point2D.Double(0, 0);
 		}
@@ -126,20 +110,24 @@ public class RenderTransformer {
 		return mousePos;
 	}
 	
-	public double getZoom() {
-		return zoom;
-	}
-	
-	public Physical getFocus() {
+	public Focusable getFocus() {
 		return focus;
 	}
 
-	public void setFocus(Physical focus) {
+	public void setFocus(Focusable focus) {
 		this.focus = focus;
 	}
 	
 	public void setScreenDimension(Dimension screenDimension) {
 		this.screenDimension = screenDimension;
+	}
+	
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
+	
+	public double getZoom() {
+		return zoom;
 	}
 	
 	public void addZoomTicks(int ticks) {

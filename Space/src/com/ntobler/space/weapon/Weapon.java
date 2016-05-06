@@ -1,4 +1,8 @@
-package com.ntobler.space;
+package com.ntobler.space.weapon;
+
+import com.ntobler.space.Space;
+import com.ntobler.space.ui.RadialMenu;
+import com.ntobler.space.ui.RadialMenu.Listable;
 
 public class Weapon implements RadialMenu.Listable {
 		
@@ -21,16 +25,16 @@ public class Weapon implements RadialMenu.Listable {
 	
 	public void use() {
 		count--;
-		lastFiredTime = Space.getTime();
+		lastFiredTime = Space.getGameTime();
 	}
 	
 	public boolean isAvailable() {
 		
 		boolean notEmpty = (count > 0);
-		boolean bulletReady = Space.getTime() > (lastFiredTime + fireRatePeriode);
+		boolean bulletReady = Space.getGameTime() > (lastFiredTime + fireRatePeriode);
 		
 		if (notEmpty && bulletReady) {
-			lastFiredTime = Space.getTime();
+			lastFiredTime = Space.getGameTime();
 			return true;
 		}
 		

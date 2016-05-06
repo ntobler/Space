@@ -1,8 +1,11 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
+
+import com.ntobler.space.Complex;
+import com.ntobler.space.Workspace;
 
 public class RotablePhysical extends Physical{
 
@@ -15,7 +18,7 @@ public class RotablePhysical extends Physical{
 	}
 	
 	@Override
-	public void tick(PhysicalWorkspace w, double passedTime, Complex mousePos) {
+	public void tick(Workspace w, double passedTime, Complex mousePos) {
 		super.tick(w, passedTime, mousePos);
 		
 		rotationAngle += rotationSpeed * passedTime;

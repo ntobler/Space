@@ -1,5 +1,6 @@
 package com.ntobler.space;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -7,11 +8,18 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ntobler.space.RadialMenu.Listable;
+import com.ntobler.space.physical.Physical;
+import com.ntobler.space.physical.Ship;
+import com.ntobler.space.render.Paintable;
+import com.ntobler.space.ui.RadialMenu;
+import com.ntobler.space.ui.RadialMenu.Listable;
+import com.ntobler.space.utility.DeltaVGauge;
+import com.ntobler.space.utility.Utility;
+import com.ntobler.space.weapon.Weapon;
 
 public class ControlPanel implements Paintable {
 
-	private PhysicalWorkspace w;
+	private Workspace w;
 	
 	private Ship ship;
 	
@@ -27,7 +35,12 @@ public class ControlPanel implements Paintable {
 	
 	
 	
-	public ControlPanel (PhysicalWorkspace w) {
+	private boolean shooting = false;
+	private boolean thrusting = false;
+	private boolean aquiring= false;
+	
+	
+	public ControlPanel (Workspace w) {
 		this.w = w;
 		
 		weapons = new ArrayList<Listable>();
@@ -50,17 +63,17 @@ public class ControlPanel implements Paintable {
 	
 	public void tick (Complex mouseScreenPos, int pressedKey) {
 		
-		Complex mouseGamePos = w.getRenderTransformer().getGamePos(mouseScreenPos);
+		Complex mouseGamePos = w.getCamera().getGamePos(mouseScreenPos);
 		
 		Complex shipPos;
 		if (ship != null) {
-			shipPos = w.getRenderTransformer().getScreenPos(ship.getPos());
+			shipPos = w.getCamera().getScreenPos(ship.getPos());
 			
-			if (pressedKey == KeyEvent.VK_A) {
+			if (aquiring) {
         		ship.setLockOn(w.getNearestPhysical(mouseGamePos));
         	}
 			
-        	if (pressedKey == KeyEvent.VK_SPACE) {
+        	if (thrusting) {
         		ship.setThrust(100);
         	}
         	else {
@@ -91,7 +104,7 @@ public class ControlPanel implements Paintable {
         		utilityMenu.setVisible(false);
         	}
         	
-        	if (pressedKey == KeyEvent.VK_C) {
+        	if (shooting) {
         		
         		w.addPhysical(ship.shoot(mouseGamePos));
         	}
@@ -124,12 +137,12 @@ public class ControlPanel implements Paintable {
 			
 			Physical lockOn = ship.getLockOn();
 			if (lockOn != null) {
-				double radius = lockOn.getRadius() * w.getRenderTransformer().getZoom();
+				double radius = lockOn.getRadius() * w.getCamera().getZoom();
 				
-				g2.setTransform(w.getRenderTransformer().getNoScaleNoRotationTransformation(lockOn));
+				g2.setTransform(w.getCamera().getNoScaleNoRotationTransformation(lockOn));
 				CustomGraphics.drawLockOn(g2, radius);
 				
-				AffineTransform transform = w.getRenderTransformer().getNoScaleTransformation(ship, lockOn);
+				AffineTransform transform = w.getCamera().getNoScaleTransformation(ship, lockOn);
 				transform.rotate(- lockOn.getPos().minus(ship.getPos()).getAngle());
 				g2.setTransform(transform);
 				paintShipLockOnTransformed(g2);
@@ -192,7 +205,7 @@ public class ControlPanel implements Paintable {
 		
 		Physical lockOn = ship.getLockOn();
 		
-		Complex shipPos = w.getRenderTransformer().getScreenPos(ship.getPos());
+		Complex shipPos = w.getCamera().getScreenPos(ship.getPos());
 		
 		final Font font = new Font("Courier", Font.PLAIN, 28);
 		g2.setFont(font);
@@ -221,6 +234,27 @@ public class ControlPanel implements Paintable {
 			g2.drawString("NO LOCK ON", 200, 32);
 		}
 	}
+
+	@Override
+	public void setImageDimension(Dimension dimension) {
+	}
+	
+	public void setShooting(boolean shooting) {
+		this.shooting = shooting;
+	}
+	
+	public void setThrusting(boolean thrusting) {
+		this.thrusting = thrusting;
+	}
+
+	public void setAquiring(boolean aquiring) {
+		this.aquiring = aquiring;
+		
+	}
+
+
+	
+	
 	
 	
 }

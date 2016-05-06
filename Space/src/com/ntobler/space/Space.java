@@ -13,95 +13,62 @@ import java.awt.event.MouseWheelListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+
+import com.ntobler.space.physical.AtmospherePlanet;
+import com.ntobler.space.physical.HostilePlanet;
+import com.ntobler.space.physical.Planet;
+import com.ntobler.space.physical.Ship;
+import com.ntobler.space.render.Camera;
+import com.ntobler.space.render.Render;
+
 public class Space {
 
-	private static GUI gui;
-	private static Render render;
-	private static RenderTransformer rt;
-	private static PhysicalWorkspace w;
-	private static ControlPanel c;
-	
-	
-	
-	private static long tickPeriod;
-	private static double timeFactor;
-	private static double time = 0;
-	
-	private static int pressedKey = 0;
-	
-	private static Complex mousePos = new Complex(0, 0);
-	
-	
-	private static Physical lastAddedPhysical = null;
-	
+	private static GameFrame gameFrame;
+	private static Game game;
 	
 	public static void main(String [] args) {
 		
-		tickPeriod = 1000/60;
-		timeFactor = 1;
+		game = new Game();
 		
-		render = new Render();
+		gameFrame = new GameFrame(game.getPaintable());
 		
-		gui = GUI.getInstance();
-		gui.add(render);
+		game.setCanvas(gameFrame.getCanvas());
 		
-		rt = new RenderTransformer(render.getSize());
-		w = new PhysicalWorkspace(rt);
-		//w.setGetGravitationalConstant(1e-1);
-		w.setGetGravitationalConstant(1e-8);
-		c = new ControlPanel(w);
-		render.addPaintable(w);
-		render.addPaintable(c);
-		
-		gui.addComponentListener(new ComponentAdapter() 
-		{  
-		        public void componentResized(ComponentEvent evt) {
-		            Component c = (Component)evt.getSource();
-		            render.setSize(c.getSize());
-		        }
-		});
+		setKeyBindings();
 		
 		setupMouseListeners();
-		
-		loadSolarSystem();
-		
-		
-		Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-            	
-            	time += (double) tickPeriod / 1000;
-            	
-            	Complex transformedMousePos = w.getRenderTransformer().getGamePos(mousePos);
-            	
-            	c.tick(mousePos, pressedKey);
-
-                w.tick(((double)tickPeriod * timeFactor) / 1000, transformedMousePos);
-                
-                
-                
-                
-                //Complex pos = w.getPhysicals().get(0).getPos();
-                //System.out.println(Double.toString(pos.getReal()) + "," + Double.toString(pos.getImag()));
-                w.getRenderTransformer().setScreenDimension(render.getSize());
-                render.revalidate();
-                gui.repaint();
-            }
-        }, tickPeriod, tickPeriod);
-        
 	}
 	
-	public static double getTime() {
-		return time;
+	public static double getGameTime() {
+		return game.getTime();
 	}
+
+	private static void setKeyBindings() {
+		
+		JComponent c = gameFrame.getCanvas();
+		
+		InputMap m = c.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0, false), Game.FIRE_PRESS);
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0, true), Game.FIRE_RELEASE);
+		
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), Game.THRUST_PRESS);
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), Game.THRUST_RELEASE);
+		
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), Game.AQUIRE_PRESS);
+		m.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), Game.AQUIRE_RELEASE);
+		
+		c.setActionMap(game.getActionMap());
+	}
+	
 	
 	private static void setupMouseListeners() {
 		
-		
-		
-		gui.addKeyListener(new KeyListener() {
+		/*gameFrame.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -110,22 +77,17 @@ public class Space {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
 				pressedKey = 0;
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 			
-		});
+		});*/
 		
-		render.addMouseMotionListener(new MouseMotionListener() {
+		gameFrame.getCanvas().addMouseMotionListener(new MouseMotionListener() {
 
-			Complex focusPos = new Complex(0,0);
-			
 			@Override
 			public void mouseDragged(MouseEvent arg0) {
 				// TODO Auto-generated method stub
@@ -135,58 +97,47 @@ public class Space {
 			@Override
 			public void mouseMoved(MouseEvent arg0) {
 				
-				
-				
-				mousePos = new Complex(arg0.getX(), arg0.getY());
+				game.setMousePos(new Complex(arg0.getX(), arg0.getY()));
 			}
 			
 		});
 		
-		render.addMouseWheelListener(new MouseWheelListener() {
+		/*gameFrame.addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent arg0) {
-				// TODO Auto-generated method stub
-				w.getRenderTransformer().addZoomTicks(0-arg0.getWheelRotation());
+				game.getCamera().addZoomTicks(0-arg0.getWheelRotation());
 			}
 			
 		});
 		
-		render.addMouseListener(new MouseListener() {
+		gameFrame.addMouseListener(new MouseListener() {
 
 			private Complex pos;
 			private Complex velocity;
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-
 				//pos = new Complex(arg0.getX(), w.getYSize() - arg0.getY());
-				pos = w.getRenderTransformer().getGamePos(new Complex(arg0.getX(), arg0.getY()));
-				
+				pos = w.getCamera().getGamePos(new Complex(arg0.getX(), arg0.getY()));
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 
-				velocity = w.getRenderTransformer().getGamePos(new Complex(arg0.getX(), arg0.getY()));
+				velocity = w.getCamera().getGamePos(new Complex(arg0.getX(), arg0.getY()));
 				
 				switch (pressedKey) {
 				case 0:
@@ -203,7 +154,7 @@ public class Space {
 						w.setShip(s);
 						c.setShip(s);
 						w.addPhysical(s);
-		                w.getRenderTransformer().setFocus(s);
+		                w.getCamera().setFocus(s);
 						
 					}
 					break;
@@ -218,7 +169,6 @@ public class Space {
 					p.setRadius(128);
 					
 					w.addPhysical(p);
-					lastAddedPhysical = p;
 					break;
 					
 				case KeyEvent.VK_O:
@@ -265,49 +215,9 @@ public class Space {
 			}
 
 
-		});
+		});*/
 		
 	}
 	
-	private static void loadSolarSystem() {
-		
-		//Sun
-		Planet sun = new Planet();
-		sun.setPos(Complex.ZERO);
-		sun.setVelocity(Complex.ZERO);
-		sun.setMass(1e16);
-		sun.setRadius(256);
-		w.addPhysical(sun);
-		
-		//Earth
-		Planet earth = new AtmospherePlanet();
-		earth.setPos(new Complex(0, 15000));
-		earth.setMass(1e14);
-		Orbit.setInOrbit(earth, sun, w, Orbit.CLOCKWHISE);
-		earth.setRadius(96);
-		w.addPhysical(earth);
-		
-		//Mars (hostile)
-		HostilePlanet mars = new HostilePlanet();
-		mars.setPos(new Complex(0, -22500));
-		mars.setMass(1e13);
-		Orbit.setInOrbit(mars, sun, w, Orbit.CLOCKWHISE);
-		mars.setRadius(64);
-		w.addPhysical(mars);
-		
-		Ship s = new Ship();
-		s.setPos(earth.getPos().plus(new Complex(0, 400)));
-		s.setMass(1000);
-		Orbit.setInOrbit(s, earth, w, Orbit.CLOCKWHISE);
-		
-		/*Ship s = new Ship();
-		s.setPos(sun.getPos().plus(new Complex(0, 400)));
-		s.setMass(1000);
-		Orbit.setInOrbit(s, sun, w, Orbit.CLOCKWHISE);*/
-		
-		w.setShip(s);
-		c.setShip(s);
-		w.addPhysical(s);
-        w.getRenderTransformer().setFocus(s);
-	}
+	
 }

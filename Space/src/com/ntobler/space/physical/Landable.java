@@ -1,4 +1,4 @@
-package com.ntobler.space;
+package com.ntobler.space.physical;
 
 public interface Landable {
 

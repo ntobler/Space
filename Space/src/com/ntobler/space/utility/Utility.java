@@ -1,4 +1,7 @@
-package com.ntobler.space;
+package com.ntobler.space.utility;
+
+import com.ntobler.space.ui.RadialMenu;
+import com.ntobler.space.ui.RadialMenu.Listable;
 
 public class Utility implements RadialMenu.Listable {
 

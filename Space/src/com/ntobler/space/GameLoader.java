@@ -12,7 +12,7 @@ public class GameLoader {
 	private static final String FILLE_NAME = "space.xml";
 	
 		
-	public static void saveWorkspace(PhysicalWorkspace w) throws Exception{
+	public static void saveWorkspace(Workspace w) throws Exception{
         XMLEncoder encoder =
            new XMLEncoder(
               new BufferedOutputStream(
@@ -21,11 +21,11 @@ public class GameLoader {
         encoder.close();
     }
 
-    public static PhysicalWorkspace loadWorkspace() throws Exception {
+    public static Workspace loadWorkspace() throws Exception {
         XMLDecoder decoder =
             new XMLDecoder(new BufferedInputStream(
                 new FileInputStream(FILLE_NAME)));
-        PhysicalWorkspace w = (PhysicalWorkspace)decoder.readObject();
+        Workspace w = (Workspace)decoder.readObject();
         decoder.close();
         return w;
     }

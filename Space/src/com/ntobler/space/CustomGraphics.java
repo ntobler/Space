@@ -7,6 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import com.ntobler.space.physical.Physical;
+
 public class CustomGraphics {
 
 	public static Shape circle(double x, double y, double radius) {
