@@ -1,6 +1,5 @@
 package com.ntobler.space;
 
-import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -36,7 +35,6 @@ public class KeyMapper implements KeyListener, MouseMotionListener, MouseWheelLi
 		}
 	}
 	
-	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//System.out.println("mouse clicked" + e.getID());
@@ -56,7 +54,6 @@ public class KeyMapper implements KeyListener, MouseMotionListener, MouseWheelLi
 	public void mousePressed(MouseEvent e) {
 		//System.out.println("mouse pressed" + e.getID());
 		passEvent(e.getButton(), ControlEvent.MOUSE_EVENT, 1);
-		
 	}
 
 	@Override
@@ -68,7 +65,7 @@ public class KeyMapper implements KeyListener, MouseMotionListener, MouseWheelLi
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		System.out.println("wheel" + arg0.getWheelRotation());
+		//System.out.println("wheel" + arg0.getWheelRotation());
 		passEvent(0, ControlEvent.MOUSE_WHEEL_EVENT, arg0.getWheelRotation());
 		
 	}

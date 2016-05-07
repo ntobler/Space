@@ -8,13 +8,18 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ntobler.space.instrument.FuelGauge;
 import com.ntobler.space.physical.Physical;
 import com.ntobler.space.physical.Ship;
 import com.ntobler.space.render.Paintable;
 import com.ntobler.space.ui.RadialMenu;
 import com.ntobler.space.ui.RadialMenu.Listable;
 import com.ntobler.space.utility.DeltaVGauge;
+import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.Utility;
+import com.ntobler.space.weapon.StandardDefenseMissile;
+import com.ntobler.space.weapon.StandardGun;
+import com.ntobler.space.weapon.StandardMissile;
 import com.ntobler.space.weapon.Weapon;
 
 public class ControlPanel implements Paintable {
@@ -32,10 +37,11 @@ public class ControlPanel implements Paintable {
 	private Utility activeUtility;
 	
 	private DeltaVGauge deltaVGauge;
+	private FuelGauge fuelGauge;
 	
 	
 	
-	private boolean shooting = false;
+	private boolean primaryShooting = false;
 	private boolean secondaryShooting = false;
 	private boolean thrusting = false;
 	private boolean aquiring= false;
@@ -49,9 +55,9 @@ public class ControlPanel implements Paintable {
 		weapons = new ArrayList<Listable>();
 		weaponMenu = new RadialMenu(weapons);
 		
-		weapons.add(new Weapon(Weapon.AIM_MISSILE, 10, 1));
-		weapons.add(new Weapon(Weapon.GUN, 1000, 0.1));
-		weapons.add(new Weapon(Weapon.BOMB, 20, 5));
+		weapons.add(new StandardGun(1000));
+		weapons.add(new StandardMissile(20));
+		weapons.add(new StandardDefenseMissile(20));
 		
 		utilities = new ArrayList<Listable>();
 		utilityMenu = new RadialMenu(utilities);
@@ -61,10 +67,11 @@ public class ControlPanel implements Paintable {
 		activeUtility = (Utility)utilities.get(0);
 		
 		deltaVGauge = new DeltaVGauge();
+		fuelGauge = new FuelGauge();
 		
 	}
 	
-	public void tick (Complex mouseScreenPos, int pressedKey) {
+	public void tick (Complex mouseScreenPos) {
 		
 		Complex mouseGamePos = w.getCamera().getGamePos(mouseScreenPos);
 		
@@ -105,11 +112,11 @@ public class ControlPanel implements Paintable {
         		utilityMenu.setVisible(false);
         	}
         	
-        	if (shooting) {
-        		w.addPhysical(ship.shoot(mouseGamePos));
+        	if (primaryShooting) {
+        		w.addPhysical(ship.shootPrimary(mouseGamePos));
         	}
         	if (secondaryShooting) {
-        		w.addPhysical(ship.shootGun(mouseGamePos));
+        		w.addPhysical(ship.shootSecondary(mouseGamePos));
         	}
 			
         	deltaVGauge.tick(ship);
@@ -126,7 +133,10 @@ public class ControlPanel implements Paintable {
 	public void setShip(Ship ship) {
 		this.ship = ship;
 		
-		ship.setWeapon((Weapon) weapons.get(0));
+		ship.setWeapon((Weapon) weapons.get(1));
+		ship.setSecondaryWeapon((Weapon) weapons.get(0));
+		
+		fuelGauge.setShip(ship);
 	}
 
 	@Override
@@ -134,7 +144,7 @@ public class ControlPanel implements Paintable {
 
 		if (ship != null) {
 			
-			paintFuelBar(g2);
+			fuelGauge.draw(g2);
 			paintSpeedMeter(g2);
 			
 			
@@ -177,12 +187,6 @@ public class ControlPanel implements Paintable {
 	
 	public void paintShipLockOnTransformed(Graphics2D g2) {
 		deltaVGauge.paint(g2);
-	}
-	
-	private void paintFuelBar(Graphics2D g2) {
-		
-		CustomGraphics.drawProgressBar(g2, 5, 5, 100, 10, ship.getFuelFraction());
-		
 	}
 	
 	private void paintSpeedMeter(Graphics2D g2) {
@@ -242,8 +246,8 @@ public class ControlPanel implements Paintable {
 	public void setImageDimension(Dimension dimension) {
 	}
 	
-	public void setShooting(boolean shooting) {
-		this.shooting = shooting;
+	public void setPrimaryShooting(boolean shooting) {
+		this.primaryShooting = shooting;
 	}
 	
 	public void setSecondaryShooting(boolean secondaryShooting) {

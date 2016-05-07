@@ -8,6 +8,7 @@ import com.ntobler.space.Complex;
 import com.ntobler.space.Geometry;
 import com.ntobler.space.Orbit;
 import com.ntobler.space.Workspace;
+import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.Thruster;
 import com.ntobler.space.utility.Thruster.ThrusterListener;
 
@@ -19,30 +20,35 @@ public class GroundAirMissile extends Missile {
 	private static final double MASS = 1;
 	private static final int DAMAGE = 50;
 	
+	private final FuelTank fuelTank;
 	private final Thruster thruster;
 	private Complex steerDir;
 	
-	private final Physical origin;
+	//private final Physical origin;
 	private final Physical lockOn;
 	
-	private Complex relativeHitPos;
+	//private Complex relativeHitPos;
 	
 	public GroundAirMissile (Physical origin, Physical lockOn) throws Exception {
 	
 		super(origin, new Complex(0, 0), MASS);
 	
-		this.origin = origin;
+		if (lockOn == null) {
+			throw new Exception();
+		}
+		
+		this.lockOn = lockOn;
+		//this.origin = origin;
 		
 		Complex lockOnDir = Geometry.getDirection(this.getPos(), lockOn.getPos());
 		Complex launchOffset = lockOnDir.normalVector().scalarMultiply(origin.radius);
 		this.setPos(this.getPos().plus(launchOffset));
 		
-		this.lockOn = lockOn;
-		
 		setDamage(DAMAGE);
 		
- 		thruster = new Thruster();
-		thruster.setFuel(2000);
+		fuelTank = new FuelTank(2000);
+		
+		thruster = new Thruster(fuelTank);
 		thruster.setThrust(MAX_THRUST);
 		thruster.setListener(new Thruster.ThrusterListener() {
 			@Override
@@ -72,8 +78,8 @@ public class GroundAirMissile extends Missile {
 	
 		thruster.tick(passedTime, steerDir, this);
 		
-		Complex lockOnDistance = lockOn.getVelocity().scalarMultiply(hitTime);
-		relativeHitPos = lockOnVector.plus(lockOnDistance);
+		//Complex lockOnDistance = lockOn.getVelocity().scalarMultiply(hitTime);
+		//relativeHitPos = lockOnVector.plus(lockOnDistance);
 	}
 	
 	public void onDestroyed(Workspace w) {

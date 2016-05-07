@@ -9,6 +9,7 @@ import com.ntobler.space.CustomGraphics;
 import com.ntobler.space.Geometry;
 import com.ntobler.space.Workspace;
 import com.ntobler.space.render.Focusable;
+import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.HitPointHolder;
 import com.ntobler.space.utility.Thruster;
 import com.ntobler.space.utility.HitPointHolder.HitPointListener;
@@ -25,21 +26,20 @@ public class Ship extends RotablePhysical implements Focusable {
 	
 	private Physical lockOn;
 	
-	private Weapon weapon;
+	private Weapon primaryWeapon;
 	private Weapon secondaryWeapon;
 	
+	private FuelTank fuelTank;
 	private Thruster thruster;
 	
 	public Ship () {
-		
-		secondaryWeapon = new Weapon(Weapon.GUN, 1000, 0.1);
-		
 		setRadius(RADIUS);
 		
 		steerDir = new Complex(1, 0);
 		
-		thruster = new Thruster();
-		thruster.setFuel(MAX_FUEL);
+		fuelTank = new FuelTank(MAX_FUEL);
+		
+		thruster = new Thruster(fuelTank);
 		thruster.setListener(new Thruster.ThrusterListener() {
 			@Override
 			public void onRunOutOfFuel() {
@@ -131,8 +131,8 @@ public class Ship extends RotablePhysical implements Focusable {
 		super.paintAbsolute(g2);
 	}
 	
-	public double getFuelFraction() {
-		return thruster.getFuel()/MAX_FUEL;
+	public FuelTank getFuelTank() {
+		return fuelTank;
 	}
 	
 	public void setThrust(double thrust) {
@@ -147,71 +147,27 @@ public class Ship extends RotablePhysical implements Focusable {
 		return lockOn;
 	}
 
-	public Physical shoot(Complex pos) {
-		switch (weapon.getId()) {
-		case Weapon.GUN:
-			return shootGun(pos);
-		case Weapon.AIM_MISSILE:
-			return launchAimMissile(pos);
-		case Weapon.BOMB:
+	public Physical shootPrimary(Complex pos) {
+		try {
+			return primaryWeapon.use(this, lockOn, this.steerDir);
+		} catch (Exception e) {
 			return null;
 		}
-		return null;
-	}
-	
-	
-	public Physical secondaryWeapon(Complex pos) {
-		Missile m = null;
-		if (secondaryWeapon.isAvailable()) {
-			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
-			try {
-				m = new Bullet(this, launchDir);
-				secondaryWeapon.use();
-			} catch (Exception e) {
-			}
-		}
-
-		return m;
-	}
-	
-	
-	
-	private Physical launchAimMissile(Complex pos) {
 		
-		AimMissile a = null;
-		if ((lockOn != null) && weapon.isAvailable()) {
-			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
-			try {
-				a = new AimMissile(this, lockOn, launchDir);
-				weapon.use();
-			} catch (Exception e) {
-			}
+	}
+	
+	
+	public Physical shootSecondary(Complex pos) {
+		try {
+			return secondaryWeapon.use(this, lockOn, this.steerDir);
+		} catch (Exception e) {
+			return null;
 		}
 		
-		return a;
-	}
-	
-	public Physical shootGun(Complex pos) {
-		
-		Missile m = null;
-		if (weapon.isAvailable()) {
-			Complex launchDir = Geometry.getDirection(this.getPos(), pos);
-			try {
-				m = new Bullet(this, launchDir);
-				weapon.use();
-			} catch (Exception e) {
-			}
-		}
-
-		return m;		
-	}
-
-	public Weapon getWeapon() {
-		return weapon;
 	}
 
 	public void setWeapon(Weapon weapon) {
-		this.weapon = weapon;
+		this.primaryWeapon = weapon;
 	}
 	
 	public void setSecondaryWeapon(Weapon secondaryWeapon) {
@@ -233,8 +189,5 @@ public class Ship extends RotablePhysical implements Focusable {
 		else {
 			return 0;
 		}
-
 	}
-	
-	
 }

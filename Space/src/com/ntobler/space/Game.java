@@ -23,7 +23,6 @@ import com.ntobler.space.render.Render;
 
 public class Game {
 
-	private static Render render;
 	private Camera camera;
 	private Workspace workspace;
 	private ControlPanel controlPanel;
@@ -35,12 +34,11 @@ public class Game {
 	
 	
 	private Complex mousePos;
-	private int pressedKey;
 	
 	public Game() {
 		
 		mousePos = Complex.ZERO;
-		pressedKey = 0;
+		//pressedKey = 0;
 		
 		tickPeriod = 1000/60;
 		timeFactor = 1;
@@ -71,7 +69,7 @@ public class Game {
         	
         	Complex transformedMousePos = workspace.getCamera().getGamePos(mousePos);
         	
-        	controlPanel.tick(mousePos, pressedKey);
+        	controlPanel.tick(mousePos);
 
             workspace.tick(((double)tickPeriod * timeFactor) / 1000, transformedMousePos);
             
@@ -166,7 +164,7 @@ public class Game {
 		return new ControlEvent(){
 			@Override
 			public void onStateAction(boolean state){
-				controlPanel.setShooting(state);
+				controlPanel.setPrimaryShooting(state);
 			}
 		};
 	}
@@ -224,78 +222,5 @@ public class Game {
 			}
 		};
 	}
-	
-	
-	
-	
-	
-	
-	
-	private ActionMap actionMap;
-	
-	public static final String FIRE_PRESS = "Fire";
-	public static final String FIRE_RELEASE = "Fire Release";
-	
-	public static final String THRUST_PRESS = "Thrust";
-	public static final String THRUST_RELEASE = "Thrust Release";
-	
-	public static final String AQUIRE_PRESS = "Aquire";
-	public static final String AQUIRE_RELEASE = "Aquire Release";
-	
-	public ActionMap getActionMap() {
-		
-		actionMap = new ActionMap();
-		
-		actionMap.put(FIRE_PRESS, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setShooting(true);
-			}
-			
-		});
-		
-		actionMap.put(FIRE_RELEASE, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setShooting(false);
-			}
-			
-		});
-		
-		actionMap.put(THRUST_PRESS, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setThrusting(true);
-			}
-			
-		});
-		
-		actionMap.put(THRUST_RELEASE, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setThrusting(false);
-			}
-			
-		});
-		
-		actionMap.put(AQUIRE_PRESS, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setAquiring(true);
-			}
-			
-		});
-		
-		actionMap.put(AQUIRE_RELEASE, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				controlPanel.setAquiring(false);
-			}
-			
-		});
-
-		return actionMap;
-	}
-
 	
 }

@@ -1,37 +1,48 @@
 package com.ntobler.space.weapon;
 
+import com.ntobler.space.Complex;
+import com.ntobler.space.Geometry;
 import com.ntobler.space.Space;
+import com.ntobler.space.physical.Bullet;
+import com.ntobler.space.physical.Missile;
+import com.ntobler.space.physical.Physical;
 import com.ntobler.space.ui.RadialMenu;
 import com.ntobler.space.ui.RadialMenu.Listable;
 
-public class Weapon implements RadialMenu.Listable {
-		
-	public static final int GUN = 1;
-	public static final int AIM_MISSILE = 2;
-	public static final int BOMB = 3;
-	public static final int GROUND_AIR_MISSILE = 4;
+public abstract class Weapon implements RadialMenu.Listable {
+			
+	protected static final String NAME = ""; 
+	protected static final String DESCRIBTION = "";
+	protected static final double FIRE_RATE = 0;
 	
-	private final int id;
 	private int count;
-	private double fireRatePeriode;
 	private double lastFiredTime;
 	
-	public Weapon (int id, int count, double fireRatePeriode) {
-		this.id = id;
+	public Weapon (int count) {
 		this.count = count;
-		this.fireRatePeriode = fireRatePeriode;
 		this.lastFiredTime = Double.NEGATIVE_INFINITY;
 	}
 	
-	public void use() {
-		count--;
-		lastFiredTime = Space.getGameTime();
+	public Missile use(Physical source, Physical target, Complex launchDir) throws Exception {
+		
+		if (isAvailable()) {
+			count--;
+			lastFiredTime = Space.getGameTime();
+			return fire(source, target, launchDir);
+		}
+		else {
+			return null;
+		}
 	}
 	
-	public boolean isAvailable() {
+	protected Missile fire(Physical source, Physical target, Complex launchDir) throws Exception {
+		return null;
+	}
+	
+	private boolean isAvailable() {
 		
 		boolean notEmpty = (count > 0);
-		boolean bulletReady = Space.getGameTime() > (lastFiredTime + fireRatePeriode);
+		boolean bulletReady = Space.getGameTime() > (lastFiredTime + getFireRate());
 		
 		if (notEmpty && bulletReady) {
 			return true;
@@ -39,26 +50,21 @@ public class Weapon implements RadialMenu.Listable {
 		return false;
 	}
 
-	public int getId() {
-		return id;
+	public double getLoadFraction() {
+		return 0.5;
 	}
-
+	
 	@Override
 	public String getName() {
-		switch (id) {
-			case GUN: return "Gun";
-			case AIM_MISSILE: return "Aim Missile";
-			case BOMB: return "Bomb";
-			case GROUND_AIR_MISSILE: return "Ground Air Missile";
-		}
-		return "";
-			
+		return NAME;	
 	}
 
 	@Override
 	public String getDescription() {
-		return "";
+		return DESCRIBTION;
 	}
-
 	
+	protected double getFireRate() {
+		return FIRE_RATE;
+	}
 }

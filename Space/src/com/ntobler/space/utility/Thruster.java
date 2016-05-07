@@ -8,16 +8,15 @@ import com.ntobler.space.physical.Physical;
 
 public class Thruster {
 
-	private double fuel;
-	private double thrust;
+	private FuelTank fuelTank;
 	
-	private boolean runOutOfFuel;
+	private double thrust;
 	
 	private ThrustAnimation thrustAnimaiton;
 	
-	public Thruster () {
+	public Thruster (FuelTank fuelTank) {
+		this.fuelTank = fuelTank;
 		this.thrust = 0;
-		this.runOutOfFuel = false;
 		thrustAnimaiton = new ThrustAnimation();
 	}
 	
@@ -31,43 +30,26 @@ public class Thruster {
 		this.thrusterListener = thrusterListener;
 	}
 	
-	
 	public void tick (double passedTime, Complex steerDir, Physical p) {
 		
 		if (Double.isNaN(steerDir.x) || Double.isNaN(steerDir.y)) {
 			steerDir = new Complex(0,0);
 		}
+		double deltaV = thrust * passedTime;
 		
-		if (!runOutOfFuel) {
+		double fuelQuantity = deltaV;
 		
-			double deltaV = thrust * passedTime;
-			
-			if (fuel < deltaV) {
-				deltaV = fuel;
-				fuel = 0;
-				runOutOfFuel = true;
-				thrusterListener.onRunOutOfFuel();
-			}
-			else {
-				fuel -= deltaV;
-			}
-			
+		try {
+			fuelTank.use(fuelQuantity);
 			p.addVelocity(steerDir.scalarMultiply(deltaV));
+			thrustAnimaiton.tick(passedTime, steerDir, p, thrust);
+		} catch (Exception e) {
+			thrusterListener.onRunOutOfFuel();
 		}
-		
-		thrustAnimaiton.tick(passedTime, steerDir, p, thrust);
 	}
 	
 	public void draw(Graphics2D g2) {
 		thrustAnimaiton.draw(g2);
-	}
-	
-	public void setFuel(double fuel) {
-		this.fuel = fuel;
-	}
-
-	public double getFuel() {
-		return fuel;
 	}
 	
 	public double getThrust() {

@@ -6,6 +6,7 @@ import java.awt.geom.Line2D;
 import com.ntobler.space.Complex;
 import com.ntobler.space.Geometry;
 import com.ntobler.space.Workspace;
+import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.Thruster;
 import com.ntobler.space.utility.Thruster.ThrusterListener;
 
@@ -16,6 +17,7 @@ public class AimMissile extends Missile {
 	private static final double MASS = 1;
 	private static final int DAMAGE = 30;
 	
+	private final FuelTank fuelTank;
 	private final Thruster thruster;
 	private Complex steerDir;
 	
@@ -25,12 +27,16 @@ public class AimMissile extends Missile {
 	
 		super(origin, launchDir.normalVector().scalarMultiply(INITIAL_VELOCITY), MASS);
 	
+		if (lockOn == null) {
+			throw new Exception();
+		}
 		this.lockOn = lockOn;
 		
 		setDamage(DAMAGE);
 		
-		thruster = new Thruster();
-		thruster.setFuel(1000);
+		fuelTank = new FuelTank(1000);
+		
+		thruster = new Thruster(fuelTank);
 		thruster.setThrust(THRUST);
 		thruster.setListener(new Thruster.ThrusterListener() {
 			@Override
