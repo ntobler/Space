@@ -113,13 +113,21 @@ public class Game {
 		Planet sun = new Planet();
 		sun.setPos(Complex.ZERO);
 		sun.setVelocity(Complex.ZERO);
-		sun.setMass(1e16);
-		sun.setRadius(256);
+		sun.setMass(5e16);
+		sun.setRadius(360);
 		workspace.addPhysical(sun);
+		
+		//planet1 (hostile)
+		HostilePlanet planet1 = new HostilePlanet();
+		planet1.setPos(Complex.fromPolar(4000, Math.toRadians(320)));
+		planet1.setMass(5e13);
+		Orbit.setInOrbit(planet1, sun, workspace, Orbit.CLOCKWHISE);
+		planet1.setRadius(80);
+		workspace.addPhysical(planet1);
 		
 		//Earth
 		Planet earth = new AtmospherePlanet();
-		earth.setPos(new Complex(0, 15000));
+		earth.setPos(Complex.fromPolar(7500, Math.toRadians(5)));
 		earth.setMass(1e14);
 		Orbit.setInOrbit(earth, sun, workspace, Orbit.CLOCKWHISE);
 		earth.setRadius(96);
@@ -127,23 +135,31 @@ public class Game {
 		
 		//Mars (hostile)
 		HostilePlanet mars = new HostilePlanet();
-		mars.setPos(new Complex(0, -22500));
+		mars.setPos(Complex.fromPolar(11000, Math.toRadians(120)));
 		mars.setMass(1e13);
 		Orbit.setInOrbit(mars, sun, workspace, Orbit.CLOCKWHISE);
 		mars.setRadius(64);
 		workspace.addPhysical(mars);
 		
-		/*Ship s = new Ship();
-		s.setPos(mars.getPos().plus(new Complex(0, 400)));
-		s.setMass(1000);
-		Orbit.setInOrbit(s, mars, workspace, Orbit.CLOCKWHISE);
-		workspace.addPhysical(s);*/
+		//planet2 (hostile)
+		HostilePlanet planet2 = new HostilePlanet();
+		planet2.setPos(Complex.fromPolar(15000, Math.toRadians(200)));
+		planet2.setMass(1e13);
+		Orbit.setInOrbit(planet2, sun, workspace, Orbit.CLOCKWHISE);
+		planet2.setRadius(64);
+		workspace.addPhysical(planet2);
 		
 		Ship s = new Ship();
+		s.setPos(mars.getPos().plus(Complex.fromPolar(400, Math.toRadians(50))));
+		s.setMass(1000);
+		Orbit.setInOrbit(s, mars, workspace, Orbit.CLOCKWHISE);
+		workspace.addPhysical(s);
+		
+		/*Ship s = new Ship();
 		s.setPos(earth.getPos().plus(new Complex(0, 400)));
 		s.setMass(1000);
 		Orbit.setInOrbit(s, earth, workspace, Orbit.CLOCKWHISE);
-		workspace.addPhysical(s);
+		workspace.addPhysical(s);*/
 		
 		/*Ship s = new Ship();
 		s.setPos(sun.getPos().plus(new Complex(0, 400)));

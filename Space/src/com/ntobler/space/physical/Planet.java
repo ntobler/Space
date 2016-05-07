@@ -16,7 +16,7 @@ public class Planet extends RotablePhysical implements Landable {
 		
 		setRadius(32);
 		
-		HitPointHolder hph = new HitPointHolder(1000);
+		HitPointHolder hph = new HitPointHolder(100);
 		setHitPointHolder(hph);
 		hph.setListener(new HitPointHolder.HitPointListener() {
 

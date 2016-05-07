@@ -76,7 +76,7 @@ public class CustomGraphics {
 	public static void drawCenteredString(Graphics2D g2, float x, float y, String text) {
 	    FontMetrics metrics = g2.getFontMetrics(g2.getFont());
 	    x -= metrics.stringWidth(text) / 2;
-	    y -= metrics.getAscent();
+	    y += metrics.getAscent()/2;
 	    g2.drawString(text, x, y);
 	}
 }

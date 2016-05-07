@@ -21,6 +21,10 @@ public class Complex {
 		return new Complex(Math.sin(angle), Math.cos(angle));
 	}
 	
+	public static Complex fromPolar (double length, double angle) {
+		return new Complex(Math.sin(angle) * length, Math.cos(angle) * length);
+	}
+	
 	public Complex plus(final Complex c) {
 		return new Complex(x + c.x, y + c.y);
 	}

@@ -38,6 +38,10 @@ public class HitPointHolder {
 			hitPointListener.onDefeated();
 		}
 	}
+	
+	public double getFraction() {
+		return (double)points/ (double)maxPoints;
+	}
 	 
 	public void paintHitBar (Graphics2D g2) {
 		

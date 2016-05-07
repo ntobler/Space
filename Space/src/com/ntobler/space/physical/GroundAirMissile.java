@@ -14,9 +14,9 @@ import com.ntobler.space.utility.Thruster.ThrusterListener;
 
 public class GroundAirMissile extends Missile {
 	
-	private static final double MEAN_ACCELERATION = 200;
+	private static final double MEAN_ACCELERATION = 100;
 	
-	private static final double MAX_THRUST = 200;
+	private static final double MAX_THRUST = 100;
 	private static final double MASS = 1;
 	private static final int DAMAGE = 50;
 	

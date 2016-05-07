@@ -8,13 +8,14 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ntobler.space.instrument.DeltaVGauge;
 import com.ntobler.space.instrument.FuelGauge;
+import com.ntobler.space.instrument.HullGauge;
 import com.ntobler.space.physical.Physical;
 import com.ntobler.space.physical.Ship;
 import com.ntobler.space.render.Paintable;
 import com.ntobler.space.ui.RadialMenu;
 import com.ntobler.space.ui.RadialMenu.Listable;
-import com.ntobler.space.utility.DeltaVGauge;
 import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.Utility;
 import com.ntobler.space.weapon.StandardDefenseMissile;
@@ -38,6 +39,7 @@ public class ControlPanel implements Paintable {
 	
 	private DeltaVGauge deltaVGauge;
 	private FuelGauge fuelGauge;
+	private HullGauge hullGauge;
 	
 	
 	
@@ -68,6 +70,7 @@ public class ControlPanel implements Paintable {
 		
 		deltaVGauge = new DeltaVGauge();
 		fuelGauge = new FuelGauge();
+		hullGauge = new HullGauge();
 		
 	}
 	
@@ -119,7 +122,9 @@ public class ControlPanel implements Paintable {
         		w.addPhysical(ship.shootSecondary(mouseGamePos));
         	}
 			
-        	deltaVGauge.tick(ship);
+        	deltaVGauge.update();
+        	fuelGauge.update();
+        	hullGauge.update();
 		}
 		
 	}
@@ -136,7 +141,9 @@ public class ControlPanel implements Paintable {
 		ship.setWeapon((Weapon) weapons.get(1));
 		ship.setSecondaryWeapon((Weapon) weapons.get(0));
 		
+		deltaVGauge.setShip(ship);
 		fuelGauge.setShip(ship);
+		hullGauge.setShip(ship);
 	}
 
 	@Override
@@ -144,49 +151,52 @@ public class ControlPanel implements Paintable {
 
 		if (ship != null) {
 			
-			fuelGauge.draw(g2);
-			paintSpeedMeter(g2);
+			paintIfShipPresent(g2);
+			g2.setTransform(w.getCamera().getNoScaleTransformation(ship, null));
 			
+			paintOnShipNormal(g2);
 			
 			Physical lockOn = ship.getLockOn();
 			if (lockOn != null) {
-				double radius = lockOn.getRadius() * w.getCamera().getZoom();
 				
+				double radius = lockOn.getRadius() * w.getCamera().getZoom();
 				g2.setTransform(w.getCamera().getNoScaleNoRotationTransformation(lockOn));
-				CustomGraphics.drawLockOn(g2, radius);
+				
+				paintOnLockOn(g2, radius);
 				
 				AffineTransform transform = w.getCamera().getNoScaleTransformation(ship, lockOn);
 				transform.rotate(- lockOn.getPos().minus(ship.getPos()).getAngle());
 				g2.setTransform(transform);
-				paintShipLockOnTransformed(g2);
-
+				
+				paintOnShipLockOnRotated(g2);
 			}
-			
 		}
 	}
 	
-	public void paintShipTranslated(Graphics2D g2) {
+	private void paintIfShipPresent(Graphics2D g2) {
 		
-		Physical lockOn = ship.getLockOn();
-		if (lockOn != null) {
-			
-			AffineTransform translatedTransform = g2.getTransform();
-			
-			AffineTransform rotatedTransform = new AffineTransform(translatedTransform);
-			double angle = Geometry.getDirection(ship.getPos(), lockOn.getPos()).getAngle();
-			rotatedTransform.rotate(angle);
-			g2.setTransform(rotatedTransform);
-			
-			paintShipLockOnTransformed(g2);
-			
-			g2.setTransform(translatedTransform);
-		}
+		paintSpeedMeter(g2);
+		
+		g2.translate(5, 5);
+		fuelGauge.draw(g2);
+		g2.translate(0, 20);
+		hullGauge.draw(g2);
 		
 	}
-
 	
-	public void paintShipLockOnTransformed(Graphics2D g2) {
-		deltaVGauge.paint(g2);
+	
+	private void paintOnLockOn(Graphics2D g2, double radius) {
+		
+		CustomGraphics.drawLockOn(g2, radius);
+	}
+	
+	private void paintOnShipNormal(Graphics2D g2) {
+		fuelGauge.drawNormalOnShip(g2);
+		hullGauge.drawNormalOnShip(g2);
+	}
+	
+	public void paintOnShipLockOnRotated(Graphics2D g2) {
+		deltaVGauge.draw(g2);
 	}
 	
 	private void paintSpeedMeter(Graphics2D g2) {
