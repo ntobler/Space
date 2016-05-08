@@ -19,7 +19,7 @@ public class Orbit {
 		return progradeNormalVector;
 	}
 	
-	public static Complex getRoundOrbitVelocityVector(Physical orbiting, Physical center, Workspace w, boolean direction) {
+	public static Complex getRelativeRoundOrbitVelocityVector(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
 		Complex rVector = orbiting.getPos().minus(center.getPos());
 		double r = rVector.abs();
@@ -37,15 +37,15 @@ public class Orbit {
 	
 	public static void setInOrbit(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
-		Complex v = getRoundOrbitVelocityVector(orbiting, center, w, direction);
-		
+		Complex v = getRelativeRoundOrbitVelocityVector(orbiting, center, w, direction);
+		v = v.plus(center.getVelocity());
 		orbiting.setVelocity(v);
 		
 	}
 	
 	public static Complex getRoundOrbitalDeltaV(Physical orbiting, Physical center, Workspace w, boolean direction) {
 		
-		Complex v = getRoundOrbitVelocityVector(orbiting, center, w, direction);
+		Complex v = getRelativeRoundOrbitVelocityVector(orbiting, center, w, direction);
 		Complex deltaV = v.minus(orbiting.getVelocity());
 		return deltaV;
 		

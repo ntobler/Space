@@ -19,7 +19,7 @@ public class AtmospherePlanet extends Planet {
 
 	public AtmospherePlanet() {
 		super();
-		this.thickness = 128;
+		this.thickness = 64;
 		this.floorFrictionCoefficient = 1;
 	}
 	
