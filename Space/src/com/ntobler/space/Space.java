@@ -60,6 +60,8 @@ public class Space {
 		keyMapper.put(KeyEvent.VK_E, ControlEvent.KEY_EVENT, game.getWeaponSelectControl());
 		keyMapper.put(KeyEvent.VK_A, ControlEvent.KEY_EVENT, game.getAquiringControl());
 		keyMapper.put(0, ControlEvent.MOUSE_WHEEL_EVENT, game.getZoomControl());
+		keyMapper.put(KeyEvent.VK_COMMA, ControlEvent.KEY_EVENT, game.getTimeWarpFasterControl());
+		keyMapper.put(KeyEvent.VK_PERIOD, ControlEvent.KEY_EVENT, game.getTimeWarpSlowerControl());
 		
 		
 	}

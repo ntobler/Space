@@ -28,8 +28,7 @@ public class Game {
 	private ControlPanel controlPanel;
 	
 	private long tickPeriod;
-	private double timeFactor;
-	private double time = 0;
+	
 	
 	
 	
@@ -38,10 +37,8 @@ public class Game {
 	public Game() {
 		
 		mousePos = Complex.ZERO;
-		//pressedKey = 0;
 		
 		tickPeriod = 1000/60;
-		timeFactor = 1;
 		
 		camera = new Camera(new Dimension(0,0));
 		workspace = new Workspace(camera);
@@ -65,13 +62,12 @@ public class Game {
 
 		@Override
 		public void run() {
-			time += (double) tickPeriod / 1000;
         	
         	Complex transformedMousePos = workspace.getCamera().getGamePos(mousePos);
         	
         	controlPanel.tick(mousePos);
 
-            workspace.tick(((double)tickPeriod * timeFactor) / 1000, transformedMousePos);
+            workspace.tick(((double)tickPeriod) / 1000, transformedMousePos);
             
             if (canvas != null) {
             	canvas.revalidate();
@@ -89,7 +85,7 @@ public class Game {
 	}
 	
 	public double getTime() {
-		return time;
+		return workspace.getTime();
 	}
 	
 	public Paintable getPaintable() {
@@ -109,57 +105,68 @@ public class Game {
 	
 	private void loadSolarSystem() {
 		
+		//Distance [km] 1e-4
+		//Mass [kg] 1e-7
+		
 		//Sun
 		Planet sun = new Planet();
 		sun.setPos(Complex.ZERO);
 		sun.setVelocity(Complex.ZERO);
-		sun.setMass(5e16);
-		sun.setRadius(360);
+		sun.setMass(2e19);
+		sun.setRadius(6900);
 		workspace.addPhysical(sun);
 		
-		//planet1 (hostile)
-		HostilePlanet planet1 = new HostilePlanet();
-		planet1.setPos(Complex.fromPolar(4000, Math.toRadians(320)));
-		planet1.setMass(5e13);
-		Orbit.setInOrbit(planet1, sun, workspace, Orbit.CLOCKWHISE);
-		planet1.setRadius(80);
-		workspace.addPhysical(planet1);
+		//Mercury (hostile)
+		HostilePlanet mercury = new HostilePlanet();
+		mercury.setPos(Complex.fromPolar(5e4, Math.toRadians(320)));
+		mercury.setMass(3.3e12);	//3.3e23
+		Orbit.setInOrbit(mercury, sun, workspace, Orbit.CLOCKWHISE);
+		mercury.setRadius(24);	//2.4e3
+		workspace.addPhysical(mercury);
+		
+		//Venus (hostile)
+		HostilePlanet venus = new HostilePlanet();
+		venus.setPos(Complex.fromPolar(10e4, Math.toRadians(320)));
+		venus.setMass(4.8e13);	//4.8e24
+		Orbit.setInOrbit(venus, sun, workspace, Orbit.ANTICLOCKWHISE);
+		venus.setRadius(60);	//6e3
+		workspace.addPhysical(venus);
 		
 		//Earth
 		Planet earth = new AtmospherePlanet();
-		earth.setPos(Complex.fromPolar(7500, Math.toRadians(5)));
-		earth.setMass(1e14);
+		earth.setPos(Complex.fromPolar(15e4, Math.toRadians(5)));
+		earth.setMass(6e13);	//6e24
 		Orbit.setInOrbit(earth, sun, workspace, Orbit.CLOCKWHISE);
-		earth.setRadius(96);
+		earth.setRadius(63);	//6.3e3
 		workspace.addPhysical(earth);
 		
 		//Mars (hostile)
 		HostilePlanet mars = new HostilePlanet();
-		mars.setPos(Complex.fromPolar(11000, Math.toRadians(120)));
-		mars.setMass(1e13);
+		mars.setPos(Complex.fromPolar(22.5e4, Math.toRadians(120)));
+		mars.setMass(6.4e12);	//6.4e23
 		Orbit.setInOrbit(mars, sun, workspace, Orbit.CLOCKWHISE);
-		mars.setRadius(64);
+		mars.setRadius(34);		//3.4e3
 		workspace.addPhysical(mars);
 		
-		//planet2 (hostile)
-		HostilePlanet planet2 = new HostilePlanet();
-		planet2.setPos(Complex.fromPolar(15000, Math.toRadians(200)));
-		planet2.setMass(1e13);
-		Orbit.setInOrbit(planet2, sun, workspace, Orbit.CLOCKWHISE);
-		planet2.setRadius(64);
-		workspace.addPhysical(planet2);
+		//Jupiter (hostile)
+		HostilePlanet jupiter = new HostilePlanet();
+		jupiter.setPos(Complex.fromPolar(77e4, Math.toRadians(200)));
+		jupiter.setMass(1.9e16);	//1.9e27
+		Orbit.setInOrbit(jupiter, sun, workspace, Orbit.CLOCKWHISE);
+		jupiter.setRadius(714);
+		workspace.addPhysical(jupiter);
 		
-		Ship s = new Ship();
+		/*Ship s = new Ship();
 		s.setPos(mars.getPos().plus(Complex.fromPolar(400, Math.toRadians(50))));
 		s.setMass(1000);
 		Orbit.setInOrbit(s, mars, workspace, Orbit.CLOCKWHISE);
-		workspace.addPhysical(s);
+		workspace.addPhysical(s);*/
 		
-		/*Ship s = new Ship();
+		Ship s = new Ship();
 		s.setPos(earth.getPos().plus(new Complex(0, 400)));
 		s.setMass(1000);
 		Orbit.setInOrbit(s, earth, workspace, Orbit.CLOCKWHISE);
-		workspace.addPhysical(s);*/
+		workspace.addPhysical(s);
 		
 		/*Ship s = new Ship();
 		s.setPos(sun.getPos().plus(new Complex(0, 400)));
@@ -173,8 +180,6 @@ public class Game {
 	public void setMousePos(Point mousePos) {
 		this.mousePos = new Complex(mousePos.getX(), mousePos.getY());
 	}
-	
-	
 	
 	public ControlEvent getShootControl(){
 		return new ControlEvent(){
@@ -235,6 +240,24 @@ public class Game {
 			@Override
 			public void onScaleAction(int value){
 				camera.addZoomTicks(-value);
+			}
+		};
+	}
+	
+	public ControlEvent getTimeWarpFasterControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				workspace.addTimeWarpTicks(1);
+			}
+		};
+	}
+	
+	public ControlEvent getTimeWarpSlowerControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				workspace.addTimeWarpTicks(-1);
 			}
 		};
 	}

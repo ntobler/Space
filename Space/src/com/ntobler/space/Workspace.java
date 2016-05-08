@@ -13,10 +13,8 @@ import com.ntobler.space.render.Paintable;
 
 public class Workspace implements Paintable {
 	
-	private double getGravitationalConstant;
+	private double gravitationalConstant;
 
-	
-	
 	private List<Physical> physicals;
 	private List<Physical> physicalsToAdd;
 	
@@ -26,10 +24,18 @@ public class Workspace implements Paintable {
 	
 	Camera camera;
 	
+	private double timeFactor;
+	private int timeFactorTicks;
+	private double time;
+	
 	public Workspace(Camera camera) {
 		this.camera = camera;
+		
+		time = 0;
+		timeFactor = 1;
+		timeFactorTicks = 0;
 
-		getGravitationalConstant = 1e2;
+		gravitationalConstant = 1e2;
 		
 		physicals = new ArrayList<Physical>();
 		physicalsToAdd = new ArrayList<Physical>();
@@ -50,7 +56,11 @@ public class Workspace implements Paintable {
 	}
 	
 
-	public void tick (double passedTime, Complex mousePos) {
+	public void tick (double tickTime, Complex mousePos) {
+		
+		double passedTime = timeFactor * tickTime;
+		time = time + passedTime;
+		
 		
 		for (Physical p: physicals) {
 			p.tick(this, passedTime, mousePos);
@@ -126,11 +136,11 @@ public class Workspace implements Paintable {
 	}
 	
 	public double getGetGravitationalConstant() {
-		return getGravitationalConstant;
+		return gravitationalConstant;
 	}
 
 	public void setGetGravitationalConstant(double getGravitationalConstant) {
-		this.getGravitationalConstant = getGravitationalConstant;
+		this.gravitationalConstant = getGravitationalConstant;
 	}
 
 	@Override
@@ -167,6 +177,15 @@ public class Workspace implements Paintable {
 
 	@Override
 	public void setImageDimension(Dimension dimension) {
+	}
+	
+	public double getTime() {
+		return time;
+	}
+	
+	public void addTimeWarpTicks(int ticks) {
+		timeFactorTicks = timeFactorTicks + ticks;
+		timeFactor = Math.pow(1.41421, timeFactorTicks);
 	}
 		
 }
