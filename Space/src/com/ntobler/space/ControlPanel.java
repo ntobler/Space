@@ -1,5 +1,6 @@
 package com.ntobler.space;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -11,6 +12,8 @@ import java.util.List;
 import com.ntobler.space.instrument.DeltaVGauge;
 import com.ntobler.space.instrument.FuelGauge;
 import com.ntobler.space.instrument.HullGauge;
+import com.ntobler.space.instrument.OrbitCalculator;
+import com.ntobler.space.instrument.ThrustControl;
 import com.ntobler.space.physical.Physical;
 import com.ntobler.space.physical.Ship;
 import com.ntobler.space.render.Paintable;
@@ -25,6 +28,9 @@ import com.ntobler.space.weapon.Weapon;
 
 public class ControlPanel implements Paintable {
 
+	public static final Font fontBigMonospaced = new Font("Courier", Font.PLAIN, 28);
+	public static final Font fontSmall = new Font("Calibri", Font.PLAIN, 16);
+	
 	private Workspace w;
 	
 	private Ship ship;
@@ -40,13 +46,15 @@ public class ControlPanel implements Paintable {
 	private DeltaVGauge deltaVGauge;
 	private FuelGauge fuelGauge;
 	private HullGauge hullGauge;
+	private ThrustControl thrustControl;
+	private OrbitCalculator orbitCalculator;
 	
 	
 	
 	private boolean primaryShooting = false;
 	private boolean secondaryShooting = false;
 	private boolean thrusting = false;
-	private boolean aquiring= false;
+	private boolean aquiring = false;
 	private boolean weaponSelecting = false;
 	private boolean utilitySelecting = false;
 	
@@ -71,6 +79,8 @@ public class ControlPanel implements Paintable {
 		deltaVGauge = new DeltaVGauge();
 		fuelGauge = new FuelGauge();
 		hullGauge = new HullGauge();
+		thrustControl = new ThrustControl();
+		orbitCalculator = new OrbitCalculator(w);
 		
 	}
 	
@@ -87,7 +97,7 @@ public class ControlPanel implements Paintable {
         	}
 			
         	if (thrusting) {
-        		ship.setThrust(100);
+        		ship.setThrust(150);
         	}
         	else {
         		ship.setThrust(0);
@@ -125,6 +135,8 @@ public class ControlPanel implements Paintable {
         	deltaVGauge.update();
         	fuelGauge.update();
         	hullGauge.update();
+        	thrustControl.update();
+        	orbitCalculator.update();
 		}
 		
 	}
@@ -144,6 +156,8 @@ public class ControlPanel implements Paintable {
 		deltaVGauge.setShip(ship);
 		fuelGauge.setShip(ship);
 		hullGauge.setShip(ship);
+		thrustControl.setShip(ship);
+		orbitCalculator.setShip(ship);
 	}
 
 	@Override
@@ -159,10 +173,8 @@ public class ControlPanel implements Paintable {
 			Physical lockOn = ship.getLockOn();
 			if (lockOn != null) {
 				
-				double radius = lockOn.getRadius() * w.getCamera().getZoom();
 				g2.setTransform(w.getCamera().getNoScaleNoRotationTransformation(lockOn));
-				
-				paintOnLockOn(g2, radius);
+				paintOnLockOn(g2, ship, lockOn);
 				
 				AffineTransform transform = w.getCamera().getNoScaleTransformation(ship, lockOn);
 				transform.rotate(- lockOn.getPos().minus(ship.getPos()).getAngle());
@@ -182,17 +194,33 @@ public class ControlPanel implements Paintable {
 		g2.translate(0, 20);
 		hullGauge.draw(g2);
 		
+		g2.translate(0, 20);
+		
+		thrustControl.draw(g2);
+		
 	}
 	
 	
-	private void paintOnLockOn(Graphics2D g2, double radius) {
+	private void paintOnLockOn(Graphics2D g2, Physical ship, Physical lockOn) {
 		
+		
+		
+		float radius = (float) (lockOn.getRadius() * w.getCamera().getZoom());
+		
+		double distance = ship.getPos().minus(lockOn.getPos()).abs();
+		
+		g2.setFont(fontSmall);
+		g2.setColor(Color.WHITE);
+		CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.RIGHT, CustomGraphics.VerticalAlign.TOP);
+		CustomGraphics.drawAlignedString(g2, -radius - 5, -radius, String.format("d: %.2f", distance));
 		CustomGraphics.drawLockOn(g2, radius);
 	}
 	
 	private void paintOnShipNormal(Graphics2D g2) {
 		fuelGauge.drawNormalOnShip(g2);
 		hullGauge.drawNormalOnShip(g2);
+		orbitCalculator.drawNormalOnShip(g2);
+		deltaVGauge.drawNormalOnShip(g2);
 	}
 	
 	public void paintOnShipLockOnRotated(Graphics2D g2) {
@@ -224,28 +252,18 @@ public class ControlPanel implements Paintable {
 		
 		Complex shipPos = w.getCamera().getScreenPos(ship.getPos());
 		
-		final Font font = new Font("Courier", Font.PLAIN, 28);
-		g2.setFont(font);
+		
+		g2.setFont(fontSmall);
 		
 		if (lockOn != null) {
 				
 			double deltaV = ship.getVelocity().minus(lockOn.getVelocity()).abs(); 
 			double progradeV = Orbit.getProgradeVelocity(ship, lockOn);
 			double radialV = Orbit.getRadialVelocity(ship, lockOn);
-			Complex roundOrbitVector = Orbit.getRoundOrbitalDeltaV(ship, lockOn, w, Orbit.CLOCKWHISE); 
 			
-			
-			
-			g2.drawString(String.format("Delta v:\t%.2f", roundOrbitVector.abs()), (int)shipPos.x + 10, (int)shipPos.y + 14);
-			if (roundOrbitVector.abs() > 50) {
-				roundOrbitVector = roundOrbitVector.normalVector().scalarMultiply(50);
-			}
-			CustomGraphics.drawVector(g2, shipPos.x, shipPos.y, roundOrbitVector, 1);
-			
-			
-			g2.drawString(String.format("Delta v:\t%.2f", deltaV), 200, 32);
-			g2.drawString(String.format("Prograde v:\t%.2f", progradeV), 200, 64);
-			g2.drawString(String.format("Radial v:\t%.2f", radialV), 200, 96);
+			g2.drawString(String.format("\u0394v: %.2f", deltaV), 64, 64);
+			g2.drawString(String.format("\u0394vp: %.2f", progradeV), 64, 80);
+			g2.drawString(String.format("\u0394vr: %.2f", radialV), 64, 96);
 		}
 		else {
 			g2.drawString("NO LOCK ON", 200, 32);

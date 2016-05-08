@@ -36,7 +36,8 @@ public class HullGauge extends Instrument{
 		if (visible) {
 			g2.setColor(color);
 			CustomGraphics.drawProgressBar(g2, 0, 0, width, height, hullFraction);
-			CustomGraphics.drawCenteredString(g2, width + 20, height/2 , String.format("Hull: %.0f%%", hullFraction*100));
+			CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.LEFT, CustomGraphics.VerticalAlign.CENTER);
+			CustomGraphics.drawAlignedString(g2, width + 5, height/2 , String.format("Hull: %.0f%%", hullFraction*100));
 			g2.setColor(Color.WHITE);
 		}
 	}
@@ -50,7 +51,8 @@ public class HullGauge extends Instrument{
 			else 							color = Color.RED;
 			
 			g2.setColor(color);
-			CustomGraphics.drawCenteredString(g2, 50, 0 , "Hull Damaged");
+			CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.RIGHT, CustomGraphics.VerticalAlign.CENTER);
+			CustomGraphics.drawAlignedString(g2, -64, 0 , "Hull Damaged");
 			g2.setColor(Color.WHITE);
 		}
 	}

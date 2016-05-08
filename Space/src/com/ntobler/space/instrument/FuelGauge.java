@@ -38,7 +38,8 @@ public class FuelGauge extends Instrument{
 		if (visible) {
 			g2.setColor(color);
 			CustomGraphics.drawProgressBar(g2, 0, 0, width, height, fillFraction);
-			CustomGraphics.drawCenteredString(g2, width + 20, height/2 , String.format("Fuel: %.0f%%", fillFraction*100));
+			CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.LEFT, CustomGraphics.VerticalAlign.CENTER);
+			CustomGraphics.drawAlignedString(g2, width + 5, height/2, String.format("Fuel: %.0f%%", fillFraction*100));
 			g2.setColor(Color.WHITE);
 		}
 	}
@@ -52,7 +53,8 @@ public class FuelGauge extends Instrument{
 			else 							color = Color.RED;
 			
 			g2.setColor(color);
-			CustomGraphics.drawCenteredString(g2, 50, 0 , "Low Fuel");
+			CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.LEFT, CustomGraphics.VerticalAlign.CENTER);
+			CustomGraphics.drawAlignedString(g2, 64, 0 , "Low Fuel");
 			g2.setColor(Color.WHITE);
 		}
 	}
