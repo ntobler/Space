@@ -135,6 +135,10 @@ public class Ship extends RotablePhysical implements Focusable {
 		return fuelTank;
 	}
 	
+	public Thruster getThruster() {
+		return thruster;
+	}
+	
 	public void setThrust(double thrust) {
 		thruster.setThrust(thrust);
 	}

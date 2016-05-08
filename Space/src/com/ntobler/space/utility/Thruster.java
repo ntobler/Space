@@ -56,6 +56,10 @@ public class Thruster {
 		return thrust;
 	}
 	
+	public double getThrustFraction() {
+		return thrust/150;
+	}
+	
 	public void setThrust(double thrust) {
 		this.thrust = thrust;
 	}
