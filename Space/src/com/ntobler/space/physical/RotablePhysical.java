@@ -33,6 +33,10 @@ public class RotablePhysical extends Physical{
 		double rotationVelocity = this.rotationSpeed * distance;
 		Complex rotationVelocityVector = relativePos.add90deg().normalVector().scalarMultiply(rotationVelocity);
 		p.setVelocity(this.getVelocity().plus(rotationVelocityVector));
+		
+		if (p instanceof RotablePhysical) {
+			((RotablePhysical) p).setRotationAngle(p.getLinkingAngle() + this.getRotationAngle());
+		}
 	}
 	
 	@Override

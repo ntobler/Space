@@ -10,7 +10,6 @@ import com.ntobler.space.Orbit;
 import com.ntobler.space.Workspace;
 import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.Thruster;
-import com.ntobler.space.utility.Thruster.ThrusterListener;
 
 public class GroundAirMissile extends Missile {
 	
@@ -50,12 +49,6 @@ public class GroundAirMissile extends Missile {
 		
 		thruster = new Thruster(fuelTank);
 		thruster.setThrust(MAX_THRUST);
-		thruster.setListener(new Thruster.ThrusterListener() {
-			@Override
-			public void onRunOutOfFuel() {
-				destroy();
-			}
-		});
 	} 
 	
 	@Override
@@ -76,7 +69,11 @@ public class GroundAirMissile extends Missile {
 		
 		thruster.setThrust(thrust);
 	
-		thruster.tick(passedTime, steerDir, this);
+		try {
+			thruster.tick(passedTime, steerDir, this);
+		} catch (Exception e) {
+			destroy();
+		}
 		
 		//Complex lockOnDistance = lockOn.getVelocity().scalarMultiply(hitTime);
 		//relativeHitPos = lockOnVector.plus(lockOnDistance);

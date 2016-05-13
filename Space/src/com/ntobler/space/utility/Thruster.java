@@ -19,18 +19,8 @@ public class Thruster {
 		this.thrust = 0;
 		thrustAnimaiton = new ThrustAnimation();
 	}
-	
-	public interface ThrusterListener {
-		public void onRunOutOfFuel();
-	}
-	
-	private ThrusterListener thrusterListener;
-	
-	public void setListener(ThrusterListener thrusterListener) {
-		this.thrusterListener = thrusterListener;
-	}
-	
-	public void tick (double passedTime, Complex steerDir, Physical p) {
+
+	public void tick (double passedTime, Complex steerDir, Physical p) throws Exception {
 		
 		if (Double.isNaN(steerDir.x) || Double.isNaN(steerDir.y)) {
 			steerDir = new Complex(0,0);
@@ -39,13 +29,9 @@ public class Thruster {
 		
 		double fuelQuantity = deltaV;
 		
-		try {
-			fuelTank.use(fuelQuantity);
-			p.addVelocity(steerDir.scalarMultiply(deltaV));
-			thrustAnimaiton.tick(passedTime, steerDir, p, thrust);
-		} catch (Exception e) {
-			thrusterListener.onRunOutOfFuel();
-		}
+		fuelTank.use(fuelQuantity);
+		p.addVelocity(steerDir.scalarMultiply(deltaV));
+		thrustAnimaiton.tick(passedTime, steerDir, p, thrust);
 	}
 	
 	public void draw(Graphics2D g2) {

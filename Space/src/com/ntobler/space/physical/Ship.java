@@ -13,7 +13,7 @@ import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.HitPointHolder;
 import com.ntobler.space.utility.Thruster;
 import com.ntobler.space.utility.HitPointHolder.HitPointListener;
-import com.ntobler.space.utility.Thruster.ThrusterListener;
+import com.ntobler.space.utility.RcsThruster;
 import com.ntobler.space.weapon.Weapon;
 
 public class Ship extends RotablePhysical implements Focusable {
@@ -32,6 +32,8 @@ public class Ship extends RotablePhysical implements Focusable {
 	private FuelTank fuelTank;
 	private Thruster thruster;
 	
+	private RcsThruster rcsThruster;
+	
 	public Ship () {
 		setRadius(RADIUS);
 		
@@ -40,12 +42,9 @@ public class Ship extends RotablePhysical implements Focusable {
 		fuelTank = new FuelTank(MAX_FUEL);
 		
 		thruster = new Thruster(fuelTank);
-		thruster.setListener(new Thruster.ThrusterListener() {
-			@Override
-			public void onRunOutOfFuel() {
-				destroy();
-			}
-		});
+		
+		rcsThruster = new RcsThruster();
+		rcsThruster.setRotable(this);
 		
 		HitPointHolder hph = new HitPointHolder(HEALTH);
 		setHitPointHolder(hph);
@@ -72,9 +71,14 @@ public class Ship extends RotablePhysical implements Focusable {
 		
 		}
 		
-		setRotationAngle(steerDir.getAngle());
+		rcsThruster.setTargetAngle(steerDir.getAngle());
+		rcsThruster.tick(passedTime);
 		
-		thruster.tick(passedTime, steerDir, this);
+		try {
+			thruster.tick(passedTime, steerDir, this);
+		} catch (Exception e) {
+			destroy();
+		}
 	}
 	
 	@Override
@@ -153,17 +157,16 @@ public class Ship extends RotablePhysical implements Focusable {
 
 	public Physical shootPrimary(Complex pos) {
 		try {
-			return primaryWeapon.use(this, lockOn, this.steerDir);
+			return primaryWeapon.use(this, lockOn, Complex.normalFromAngle(getRotationAngle()));
 		} catch (Exception e) {
 			return null;
 		}
 		
 	}
 	
-	
 	public Physical shootSecondary(Complex pos) {
 		try {
-			return secondaryWeapon.use(this, lockOn, this.steerDir);
+			return secondaryWeapon.use(this, lockOn, Complex.normalFromAngle(getRotationAngle()));
 		} catch (Exception e) {
 			return null;
 		}

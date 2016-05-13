@@ -132,6 +132,10 @@ public class Physical {
 		Complex relativePos = Complex.normalFromAngle(p.linkingAngle).scalarMultiply(distance);
 		p.setPos(this.pos.plus(relativePos));
 		p.setVelocity(this.velocity);
+		
+		if (p instanceof RotablePhysical) {
+			((RotablePhysical) p).setRotationAngle(p.linkingAngle);
+		}
 	}
 
 	
