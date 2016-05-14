@@ -23,10 +23,9 @@ public class Ship extends RotablePhysical implements Focusable {
 	private final int HEALTH = 1000;
 	private final double RADIUS = 6;
 	
-	private final double MAX_COLISION_V_RADIAL = 100;
+	private final double MAX_COLISION_V_RADIAL = 50;
 	private final double MAX_COLISION_V_PROGRADE = 25;
-	private final double COLISION_HIT_FACTOR = 1;
-	
+	private final double COLISION_HIT_FACTOR = 5;
 	
 	private Complex steerDir;
 	
@@ -202,7 +201,7 @@ public class Ship extends RotablePhysical implements Focusable {
 	public double getRotation() {
 
 		if (lockOn != null) {
-			return 0;//Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+			return Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
 		}
 		else {
 			return 0;
@@ -212,16 +211,17 @@ public class Ship extends RotablePhysical implements Focusable {
 	public int hitColisionDamage(Physical trigger) {
 		
 		double distance = trigger.getPos().minus(getPos()).abs();
-		double rotationVelocity = getRotationSpeed() * distance;
 		
+		double rotationVelocity = 0;
+		if (trigger instanceof RotablePhysical) {
+			rotationVelocity = ((RotablePhysical)trigger).getRotationSpeed() * distance;
+		}
+		  
 		double radV = -Orbit.getRadialVelocity(trigger, this);
 		double proV = Math.abs(Orbit.getProgradeVelocity(trigger, this) - rotationVelocity);
 		
 		radV -= MAX_COLISION_V_RADIAL;
 		proV -= MAX_COLISION_V_PROGRADE;
-		
-		System.out.println(radV);
-		System.out.println(proV);
 		
 		if (radV > 0) {
 			hit((int) (radV*COLISION_HIT_FACTOR));
