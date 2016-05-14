@@ -7,6 +7,7 @@ import java.awt.geom.Point2D;
 import com.ntobler.space.Complex;
 import com.ntobler.space.CustomGraphics;
 import com.ntobler.space.Geometry;
+import com.ntobler.space.Orbit;
 import com.ntobler.space.Workspace;
 import com.ntobler.space.render.Focusable;
 import com.ntobler.space.utility.FuelTank;
@@ -21,6 +22,11 @@ public class Ship extends RotablePhysical implements Focusable {
 	private final double MAX_FUEL = 10000;
 	private final int HEALTH = 1000;
 	private final double RADIUS = 6;
+	
+	private final double MAX_COLISION_V_RADIAL = 100;
+	private final double MAX_COLISION_V_PROGRADE = 25;
+	private final double COLISION_HIT_FACTOR = 1;
+	
 	
 	private Complex steerDir;
 	
@@ -201,5 +207,29 @@ public class Ship extends RotablePhysical implements Focusable {
 		else {
 			return 0;
 		}
+	}
+	
+	public int hitColisionDamage(Physical trigger) {
+		
+		double distance = trigger.getPos().minus(getPos()).abs();
+		double rotationVelocity = getRotationSpeed() * distance;
+		
+		double radV = -Orbit.getRadialVelocity(trigger, this);
+		double proV = Math.abs(Orbit.getProgradeVelocity(trigger, this) - rotationVelocity);
+		
+		radV -= MAX_COLISION_V_RADIAL;
+		proV -= MAX_COLISION_V_PROGRADE;
+		
+		System.out.println(radV);
+		System.out.println(proV);
+		
+		if (radV > 0) {
+			hit((int) (radV*COLISION_HIT_FACTOR));
+		}
+		if (proV > 0) {
+			hit((int) (proV*COLISION_HIT_FACTOR));
+		}
+
+		return 0;
 	}
 }

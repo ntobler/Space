@@ -4,12 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
 import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.Orbit;
 import com.ntobler.space.Workspace;
 import com.ntobler.space.utility.HitPointHolder;
 import com.ntobler.space.utility.HitPointHolder.HitPointListener;
 
 public class Planet extends RotablePhysical implements Landable {
-	
+
 	public Planet() {
 		
 		this.setRotationSpeed(0.25);
@@ -68,7 +69,9 @@ public class Planet extends RotablePhysical implements Landable {
 	@Override
 	public void land(Physical p) {
 		
+		if (p instanceof Ship) {
+			((Ship)p).hitColisionDamage(this);
+		}
 		link(p);
 	}
-
 }
