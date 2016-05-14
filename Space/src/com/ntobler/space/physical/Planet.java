@@ -19,11 +19,15 @@ public class Planet extends RotablePhysical implements Landable {
 		
 		HitPointHolder hph = new HitPointHolder(100);
 		setHitPointHolder(hph);
-		hph.setListener(new HitPointHolder.HitPointListener() {
+		hph.addListener(new HitPointHolder.HitPointListener() {
 
 			@Override
 			public void onDefeated() {
 				destroy();
+			}
+
+			@Override
+			public void onHit() {
 			}
 			
 		});	

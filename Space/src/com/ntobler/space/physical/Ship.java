@@ -13,7 +13,6 @@ import com.ntobler.space.render.Focusable;
 import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.HitPointHolder;
 import com.ntobler.space.utility.Thruster;
-import com.ntobler.space.utility.HitPointHolder.HitPointListener;
 import com.ntobler.space.utility.RcsThruster;
 import com.ntobler.space.weapon.Weapon;
 
@@ -54,11 +53,15 @@ public class Ship extends RotablePhysical implements Focusable {
 		
 		HitPointHolder hph = new HitPointHolder(HEALTH);
 		setHitPointHolder(hph);
-		hph.setListener(new HitPointHolder.HitPointListener() {
+		hph.addListener(new HitPointHolder.HitPointListener() {
 
 			@Override
 			public void onDefeated() {
 				destroy();
+			}
+
+			@Override
+			public void onHit() {
 			}
 			
 		});	
@@ -67,8 +70,6 @@ public class Ship extends RotablePhysical implements Focusable {
 	@Override
 	public void tick(Workspace w, double passedTime, Complex mousePos) {
 		super.tick(w, passedTime, mousePos);
-		
-		
 		
 		steerDir = Geometry.getDirection(this.getPos(), mousePos);
 		
@@ -201,7 +202,7 @@ public class Ship extends RotablePhysical implements Focusable {
 	public double getRotation() {
 
 		if (lockOn != null) {
-			return Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+			return 0;//Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
 		}
 		else {
 			return 0;

@@ -55,13 +55,7 @@ public class Camera {
 		return transform;
 	}
 	
-	public AffineTransform getNoScaleTransformation(Physical p, Physical dir) {
-		
-		double angle = 0;
-		
-		if(dir != null) {
-			angle = dir.getPos().minus(p.getPos()).getAngle();
-		}
+	public AffineTransform getNoScaleTransformation(Physical p) {
 		
 		AffineTransform transform = getTransformation();
 		transform.translate(p.getPos().x, p.getPos().y);
