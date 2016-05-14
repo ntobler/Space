@@ -187,5 +187,9 @@ public class Workspace implements Paintable {
 		timeFactorTicks = timeFactorTicks + ticks;
 		timeFactor = Math.pow(1.41421, timeFactorTicks);
 	}
+	
+	public double getTimeFactor() {
+		return timeFactor;
+	}
 		
 }

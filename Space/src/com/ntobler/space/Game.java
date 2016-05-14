@@ -248,7 +248,7 @@ public class Game {
 		return new ControlEvent(){
 			@Override
 			public void onStateAction(boolean state){
-				workspace.addTimeWarpTicks(1);
+				if (state) workspace.addTimeWarpTicks(1);
 			}
 		};
 	}
@@ -257,7 +257,7 @@ public class Game {
 		return new ControlEvent(){
 			@Override
 			public void onStateAction(boolean state){
-				workspace.addTimeWarpTicks(-1);
+				if (state) workspace.addTimeWarpTicks(-1);
 			}
 		};
 	}

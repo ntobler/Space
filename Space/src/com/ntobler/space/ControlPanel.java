@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.ntobler.space.instrument.DeltaVGauge;
 import com.ntobler.space.instrument.FuelGauge;
+import com.ntobler.space.instrument.GameOver;
 import com.ntobler.space.instrument.HullGauge;
 import com.ntobler.space.instrument.OrbitCalculator;
 import com.ntobler.space.instrument.ThrustControl;
@@ -31,6 +32,8 @@ public class ControlPanel implements Paintable {
 
 	public static final Font fontBigMonospaced = new Font("Courier", Font.PLAIN, 28);
 	public static final Font fontSmall = new Font("Calibri", Font.PLAIN, 16);
+	public static final Font fontBig = new Font("Calibri", Font.PLAIN, 24);
+	public static final Font fontHuge = new Font("Calibri", Font.PLAIN, 48);
 	
 	private Workspace w;
 	
@@ -49,6 +52,7 @@ public class ControlPanel implements Paintable {
 	private HullGauge hullGauge;
 	private ThrustControl thrustControl;
 	private OrbitCalculator orbitCalculator;
+	private GameOver gameOver;
 	
 	
 	
@@ -83,9 +87,13 @@ public class ControlPanel implements Paintable {
 		thrustControl = new ThrustControl();
 		orbitCalculator = new OrbitCalculator(w);
 		
+		gameOver = new GameOver();
+		
 	}
 	
 	public void tick (Complex mouseScreenPos) {
+		
+		gameOver.tick();
 		
 		Complex mouseGamePos = w.getCamera().getGamePos(mouseScreenPos);
 		
@@ -173,6 +181,7 @@ public class ControlPanel implements Paintable {
 			
 			@Override
 			public void onDefeated() {
+				gameOver.setActive(true);
 			}
 		});
 	}
@@ -213,8 +222,21 @@ public class ControlPanel implements Paintable {
 		
 		g2.translate(0, 20);
 		thrustControl.draw(g2);
+		
+		g2.translate(60, 20);
+		paintTimeFactor(g2);
 	}
 	
+	private void paintTimeFactor(Graphics2D g2) {
+		double timeFactor = w.getTimeFactor();
+				
+		g2.fill(CustomGraphics.circle(0, 0, 20));
+		g2.setColor(Color.BLACK);
+		g2.setFont(fontBig);
+		CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.CENTER, CustomGraphics.VerticalAlign.CENTER);
+		CustomGraphics.drawAlignedString(g2, 0, 0, String.format("%.1f", timeFactor));
+				
+	}
 	
 	private void paintOnLockOn(Graphics2D g2, Physical ship, Physical lockOn) {
 		
@@ -234,6 +256,8 @@ public class ControlPanel implements Paintable {
 		hullGauge.drawNormalOnShip(g2);
 		orbitCalculator.drawNormalOnShip(g2);
 		deltaVGauge.drawNormalOnShip(g2);
+		
+		gameOver.drawNormalOnShip(g2);
 	}
 	
 	public void paintOnShipLockOnRotated(Graphics2D g2) {
