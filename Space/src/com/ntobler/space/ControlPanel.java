@@ -20,6 +20,7 @@ import com.ntobler.space.render.Paintable;
 import com.ntobler.space.ui.RadialMenu;
 import com.ntobler.space.ui.RadialMenu.Listable;
 import com.ntobler.space.utility.FuelTank;
+import com.ntobler.space.utility.HitPointHolder.HitPointListener;
 import com.ntobler.space.utility.Utility;
 import com.ntobler.space.weapon.StandardDefenseMissile;
 import com.ntobler.space.weapon.StandardGun;
@@ -162,6 +163,18 @@ public class ControlPanel implements Paintable {
 		hullGauge.setShip(ship);
 		thrustControl.setShip(ship);
 		orbitCalculator.setShip(ship);
+		
+		ship.getHitPointHolder().addListener(new HitPointListener() {
+			
+			@Override
+			public void onHit() {
+				hullGauge.reportHit();
+			}
+			
+			@Override
+			public void onDefeated() {
+			}
+		});
 	}
 
 	@Override
@@ -170,7 +183,7 @@ public class ControlPanel implements Paintable {
 		if (ship != null) {
 			
 			paintIfShipPresent(g2);
-			g2.setTransform(w.getCamera().getNoScaleTransformation(ship, null));
+			g2.setTransform(w.getCamera().getNoScaleNoRotationTransformation(ship));
 			
 			paintOnShipNormal(g2);
 			
@@ -180,7 +193,7 @@ public class ControlPanel implements Paintable {
 				g2.setTransform(w.getCamera().getNoScaleNoRotationTransformation(lockOn));
 				paintOnLockOn(g2, ship, lockOn);
 				
-				AffineTransform transform = w.getCamera().getNoScaleTransformation(ship, lockOn);
+				AffineTransform transform = w.getCamera().getNoScaleTransformation(ship);
 				transform.rotate(- lockOn.getPos().minus(ship.getPos()).getAngle());
 				g2.setTransform(transform);
 				
@@ -199,15 +212,11 @@ public class ControlPanel implements Paintable {
 		hullGauge.draw(g2);
 		
 		g2.translate(0, 20);
-		
 		thrustControl.draw(g2);
-		
 	}
 	
 	
 	private void paintOnLockOn(Graphics2D g2, Physical ship, Physical lockOn) {
-		
-		
 		
 		float radius = (float) (lockOn.getRadius() * w.getCamera().getZoom());
 		
@@ -245,34 +254,10 @@ public class ControlPanel implements Paintable {
 		case Utility.NONE:
 			return;
 		case Utility.ORBIT_CALCULATOR:
-			paintOrbitCalculator(g2);
 			return;
 		}
 	}
-	
-	private void paintOrbitCalculator(Graphics2D g2) {
-		
-		Physical lockOn = ship.getLockOn();
-		
-		Complex shipPos = w.getCamera().getScreenPos(ship.getPos());
-		
-		
-		g2.setFont(fontSmall);
-		
-		if (lockOn != null) {
-				
-			double deltaV = ship.getVelocity().minus(lockOn.getVelocity()).abs(); 
-			double progradeV = Orbit.getProgradeVelocity(ship, lockOn);
-			double radialV = Orbit.getRadialVelocity(ship, lockOn);
-			
-			g2.drawString(String.format("\u0394v: %.2f", deltaV), 64, 64);
-			g2.drawString(String.format("\u0394vp: %.2f", progradeV), 64, 80);
-			g2.drawString(String.format("\u0394vr: %.2f", radialV), 64, 96);
-		}
-		else {
-			g2.drawString("NO LOCK ON", 200, 32);
-		}
-	}
+
 
 	@Override
 	public void setImageDimension(Dimension dimension) {

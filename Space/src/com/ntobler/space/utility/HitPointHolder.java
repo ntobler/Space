@@ -2,8 +2,12 @@ package com.ntobler.space.utility;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.physical.Physical;
 
 public class HitPointHolder {
 
@@ -13,29 +17,44 @@ public class HitPointHolder {
 	private int maxPoints;
 	private int points;
 	
-	private HitPointListener hitPointListener;
+	private List<HitPointListener> hitPointListeners;
 	
 	public HitPointHolder (int maxPoints) {
 		 
 		this.maxPoints = maxPoints;
 		this.points = maxPoints;
+		
+		this.hitPointListeners = new ArrayList<HitPointListener>();
 	}
 	
 	public interface HitPointListener {
 		public void onDefeated();
+		public void onHit();
 	}
 
-	public void setListener(HitPointListener hitPointListener) {
-		this.hitPointListener = hitPointListener;
+	public void addListener(HitPointListener hitPointListener) {
+		hitPointListeners.add(hitPointListener);
+	}
+	
+	public void removeAllListeners() {
+		hitPointListeners.clear();
 	}
 	
 	public void hit(int points) {
+		
+		for (HitPointListener l: hitPointListeners) {
+			l.onHit();
+		}
+		
 		if (this.points > points) {
 			this.points -= points;
 		}
 		else {
 			this.points = 0;
-			hitPointListener.onDefeated();
+			
+			for (HitPointListener l: hitPointListeners) {
+				l.onDefeated();
+			}
 		}
 	}
 	
