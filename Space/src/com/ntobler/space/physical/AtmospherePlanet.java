@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 
 import com.ntobler.space.Complex;
 import com.ntobler.space.CustomGraphics;
+import com.ntobler.space.Geometry;
 import com.ntobler.space.Workspace;
 
 public class AtmospherePlanet extends Planet {
@@ -13,6 +14,7 @@ public class AtmospherePlanet extends Planet {
 	//implement wind
 	
 	private double thickness;
+	private double windSpeed;
 	private double floorFrictionCoefficient;
 	
 	//private double windSpeed;	//rad per second
@@ -21,6 +23,8 @@ public class AtmospherePlanet extends Planet {
 		super();
 		this.thickness = 64;
 		this.floorFrictionCoefficient = 1;
+		
+		this.windSpeed = 20;
 	}
 	
 
@@ -35,16 +39,20 @@ public class AtmospherePlanet extends Planet {
 	
 	private void calcPhysical(Physical p, double passedTime) {
 		
-		double height = p.getPos().minus(getPos()).abs() - getRadius();
+		double distance = p.getPos().minus(getPos()).abs();
+		double height = distance - getRadius();
 		
  		if (height < thickness) {
 		
 			double friction =  height / thickness * floorFrictionCoefficient;
 		
-			Complex deltaV = this.getVelocity().minus(p.getVelocity());
-			Complex scaledDeltaV = deltaV.scalarMultiply(friction * passedTime);
+			Complex deltaV = this.getVelocity().minus(p.getVelocity());		
+			double atmosphereSpeed = getRotationSpeed() * distance;
 			
-			p.addVelocity(scaledDeltaV);
+			Complex atmosphereV = Geometry.getDirection(this.getPos(), p.getPos()).add90deg().scalarMultiply(atmosphereSpeed + windSpeed);
+						
+			p.addVelocity(deltaV.scalarMultiply(friction * passedTime));
+			p.addVelocity(atmosphereV.scalarMultiply(friction * passedTime));
 		}
 	}
 	
