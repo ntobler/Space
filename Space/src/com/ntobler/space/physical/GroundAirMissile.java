@@ -48,6 +48,7 @@ public class GroundAirMissile extends Missile {
 		fuelTank = new FuelTank(2000);
 		
 		thruster = new Thruster(fuelTank);
+		thruster.setMaxThrust(MAX_THRUST);
 		thruster.setThrust(MAX_THRUST);
 	} 
 	

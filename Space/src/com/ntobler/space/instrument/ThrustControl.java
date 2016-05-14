@@ -35,7 +35,7 @@ public class ThrustControl  extends Instrument {
 		
 		if (visible) {
 			g2.setColor(color);
-			CustomGraphics.drawverticalProgressBar(g2, 0, 0, width, height, thrust);
+			CustomGraphics.drawVerticalProgressBar(g2, 0, 0, width, height, thrust);
 			CustomGraphics.drawCenteredString(g2, width/2, height + 16 , String.format("%.0f%%", thrust*100));
 			g2.setColor(Color.WHITE);
 		}

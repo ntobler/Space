@@ -42,6 +42,7 @@ public class Ship extends RotablePhysical implements Focusable {
 		fuelTank = new FuelTank(MAX_FUEL);
 		
 		thruster = new Thruster(fuelTank);
+		thruster.setMaxThrust(150);
 		
 		rcsThruster = new RcsThruster();
 		rcsThruster.setRotable(this);
@@ -145,6 +146,10 @@ public class Ship extends RotablePhysical implements Focusable {
 	
 	public void setThrust(double thrust) {
 		thruster.setThrust(thrust);
+	}
+	
+	public void setThrustFract(double thrustFract) {
+		thruster.setThrustFract(thrustFract);
 	}
 	
 	public void setLockOn(Physical lockOn) {

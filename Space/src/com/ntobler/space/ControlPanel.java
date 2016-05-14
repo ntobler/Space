@@ -97,7 +97,11 @@ public class ControlPanel implements Paintable {
         	}
 			
         	if (thrusting) {
-        		ship.setThrust(150);
+        		
+        		double thrustFract = mouseScreenPos.minus(w.getCamera().getScreenPos(ship.getPos())).abs();
+        		thrustFract = thrustFract / 100;
+        		if (thrustFract > 1) thrustFract = 1;
+        		ship.setThrustFract(thrustFract);
         	}
         	else {
         		ship.setThrust(0);

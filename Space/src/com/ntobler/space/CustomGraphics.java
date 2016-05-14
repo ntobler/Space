@@ -20,9 +20,9 @@ public class CustomGraphics {
 		g2.fill(new Rectangle2D.Double(x, y, width * progress, height));
 	}
 	
-	public static void drawverticalProgressBar(Graphics2D g2, int x, int y, int width, int height, double progress) {
+	public static void drawVerticalProgressBar(Graphics2D g2, int x, int y, int width, int height, double progress) {
 		g2.draw(new Rectangle2D.Double(x, y, width, height));
-		g2.fill(new Rectangle2D.Double(x, y, width, height * progress));
+		g2.fill(new Rectangle2D.Double(x, y + height * (1-progress), width, height * progress));
 	}
 	
 	public static void drawCenteredProgressBar(Graphics2D g2, double x, double y, double width, double height, double progress) {

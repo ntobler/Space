@@ -10,14 +10,19 @@ public class Thruster {
 
 	private FuelTank fuelTank;
 	
+	private double maxThrust;
 	private double thrust;
 	
 	private ThrustAnimation thrustAnimaiton;
-	
+
 	public Thruster (FuelTank fuelTank) {
 		this.fuelTank = fuelTank;
 		this.thrust = 0;
 		thrustAnimaiton = new ThrustAnimation();
+	}
+	
+	public void setMaxThrust(double maxThrust) {
+		this.maxThrust = maxThrust;
 	}
 
 	public void tick (double passedTime, Complex steerDir, Physical p) throws Exception {
@@ -48,6 +53,12 @@ public class Thruster {
 	
 	public void setThrust(double thrust) {
 		this.thrust = thrust;
+		if (thrust > maxThrust) thrust =  maxThrust;
+	}
+	
+	public void setThrustFract(double thrustFract) {
+		thrust = thrustFract * maxThrust;
+		if (thrust > maxThrust) thrust =  maxThrust;
 	}
 	
 }

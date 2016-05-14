@@ -36,6 +36,7 @@ public class AimMissile extends Missile {
 		fuelTank = new FuelTank(1000);
 		
 		thruster = new Thruster(fuelTank);
+		thruster.setMaxThrust(THRUST);
 		thruster.setThrust(THRUST);
 
 	} 
