@@ -77,11 +77,9 @@ public class ThrustAnimation {
 	public void draw(Graphics2D g2) {
 
  		for (Particle p: particles) {
-		
-			int hue = (int) (p.fraction * 256);
-	 		g2.setPaint(new Color(hue + (hue * 256) + (hue * 256 * 256)));
+			int alpha = (int) (p.fraction * 256);
+	 		g2.setColor(new Color(255, 255, 255, alpha));
 			g2.fill(CustomGraphics.circle(p.pos.x, p.pos.y, p.fraction * p.radius));
-			
 		}
  		g2.setPaint(Color.WHITE);
 	}
