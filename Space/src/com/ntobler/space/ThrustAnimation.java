@@ -74,7 +74,7 @@ public class ThrustAnimation {
 		}
 	}
 
-	public void draw(Graphics2D g2) {
+	public void drawAbsolute(Graphics2D g2) {
 
  		for (Particle p: particles) {
 			int alpha = (int) (p.fraction * 256);

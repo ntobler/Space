@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.Point2D;
 
+import com.ntobler.space.ControlPanel;
 import com.ntobler.space.CustomGraphics;
 
 public class HullGauge extends Instrument{
@@ -83,6 +84,7 @@ public class HullGauge extends Instrument{
 				else 							color = Color.RED;
 				
 				g2.setColor(color);
+				g2.setFont(ControlPanel.fontBig);
 				CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.RIGHT, CustomGraphics.VerticalAlign.CENTER);
 				CustomGraphics.drawAlignedString(g2, -64, 0 , "Hull Damaged");
 				g2.setColor(Color.WHITE);

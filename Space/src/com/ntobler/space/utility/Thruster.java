@@ -39,8 +39,8 @@ public class Thruster {
 		thrustAnimaiton.tick(passedTime, steerDir, p, thrust);
 	}
 	
-	public void draw(Graphics2D g2) {
-		thrustAnimaiton.draw(g2);
+	public void drawAbsolute(Graphics2D g2) {
+		thrustAnimaiton.drawAbsolute(g2);
 	}
 	
 	public double getThrust() {

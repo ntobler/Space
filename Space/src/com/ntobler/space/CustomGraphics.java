@@ -128,7 +128,7 @@ public class CustomGraphics {
 		case BOTTOM:
 			break;
 		case CENTER:
-			y += metrics.getAscent()/2;
+			y += metrics.getAscent()/2; 
 			break;
 		case TOP:
 			y += metrics.getAscent();

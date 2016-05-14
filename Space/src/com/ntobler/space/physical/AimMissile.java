@@ -69,7 +69,7 @@ public class AimMissile extends Missile {
 	@Override
 	public void paintAbsolute(Graphics2D g2) {
 	
-		thruster.draw(g2);
+		thruster.drawAbsolute(g2);
 		super.paintAbsolute(g2);
 	}
 	

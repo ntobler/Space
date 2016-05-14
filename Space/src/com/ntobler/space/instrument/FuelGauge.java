@@ -3,6 +3,7 @@ package com.ntobler.space.instrument;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import com.ntobler.space.ControlPanel;
 import com.ntobler.space.CustomGraphics;
 import com.ntobler.space.physical.Ship;
 import com.ntobler.space.utility.FuelTank;
@@ -53,6 +54,7 @@ public class FuelGauge extends Instrument{
 			else 							color = Color.RED;
 			
 			g2.setColor(color);
+			g2.setFont(ControlPanel.fontBig);
 			CustomGraphics.setStringAlign(CustomGraphics.HorizontalAlign.LEFT, CustomGraphics.VerticalAlign.CENTER);
 			CustomGraphics.drawAlignedString(g2, 64, 0 , "Low Fuel");
 			g2.setColor(Color.WHITE);
