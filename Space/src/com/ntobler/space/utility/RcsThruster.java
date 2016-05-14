@@ -1,5 +1,6 @@
 package com.ntobler.space.utility;
 
+import com.ntobler.space.Geometry;
 import com.ntobler.space.physical.RotablePhysical;
 
 public class RcsThruster {
@@ -26,12 +27,12 @@ public class RcsThruster {
 		double angle = rotable.getRotationAngle();
 		double rotationSpeed = rotable.getRotationSpeed();
 		
-		angle = normalizeAngle(angle);
-		targetAngle = normalizeAngle(targetAngle);
+		angle = Geometry.normalizeAngle(angle);
+		targetAngle = Geometry.normalizeAngle(targetAngle);
 		
 		double rotationalAcceleration;
 		
-		double deltaAlpha = normalizeAngle(targetAngle - angle);
+		double deltaAlpha = Geometry.normalizeAngle(targetAngle - angle);
 		
 		double vMax = Math.sqrt(MAX_THRUST * Math.abs(deltaAlpha))*0.9;
 		
@@ -74,13 +75,6 @@ public class RcsThruster {
 		}
 		return a;
 	}
-	
-	private double normalizeAngle(double angle) {
-		if (angle > (Math.PI)) angle -=  2*Math.PI;
-		if (angle < (-Math.PI)) angle +=  2*Math.PI;
-		return angle;
-	}
-	
 	
 	public void setTargetAngle(double angle) {
 		this.targetAngle = angle;

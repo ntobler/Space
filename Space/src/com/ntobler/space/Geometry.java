@@ -20,4 +20,11 @@ public class Geometry {
 		
 		return upper / lower;
 	}
+	
+	public static double normalizeAngle(double angle) {
+		angle = angle % (2*Math.PI); 
+		if (angle > (Math.PI)) angle -=  2*Math.PI;
+		if (angle < (-Math.PI)) angle +=  2*Math.PI;
+		return angle;
+	}
 }

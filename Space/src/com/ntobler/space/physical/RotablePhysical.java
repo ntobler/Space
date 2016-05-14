@@ -5,6 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import com.ntobler.space.Complex;
+import com.ntobler.space.Geometry;
 import com.ntobler.space.Workspace;
 
 public class RotablePhysical extends Physical{
@@ -21,7 +22,7 @@ public class RotablePhysical extends Physical{
 	public void tick(Workspace w, double passedTime, Complex mousePos) {
 		super.tick(w, passedTime, mousePos);
 		
-		rotationAngle += rotationSpeed * passedTime;
+		rotationAngle = Geometry.normalizeAngle(rotationAngle + ( rotationSpeed * passedTime));
 	}
 	
 	@Override
