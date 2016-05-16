@@ -44,6 +44,12 @@ public class Planet extends RotablePhysical implements Landable {
 		g2.draw(new Line2D.Double(0, -20, 0, 20));
 		g2.setColor(Color.WHITE);
 		
+		
+	}
+	
+	@Override
+	protected void paintTranslated(Graphics2D g2) {
+		super.paintTranslated(g2);
 		getHitPointHolder().paintHitBar(g2);
 	}
 
