@@ -62,6 +62,7 @@ public class Space {
 		keyMapper.put(0, ControlEvent.MOUSE_WHEEL_EVENT, game.getZoomControl());
 		keyMapper.put(KeyEvent.VK_COMMA, ControlEvent.KEY_EVENT, game.getTimeWarpFasterControl());
 		keyMapper.put(KeyEvent.VK_PERIOD, ControlEvent.KEY_EVENT, game.getTimeWarpSlowerControl());
+		keyMapper.put(KeyEvent.VK_V, ControlEvent.KEY_EVENT, game.getToggleViewControl());
 		
 		
 	}

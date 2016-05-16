@@ -18,12 +18,21 @@ public class Camera {
 	private int zoomTicks;
 	private double zoom;
 	
+	public enum View {
+		NORMAL,
+		AQUIRE_ROTATED
+	};
+	
+	View view;
+	
 	public Camera (Dimension screenDimension) {
 		
 		this.screenDimension = screenDimension;
 		
 		zoom = 1;
 		zoomTicks = 0;
+		
+		view = View.NORMAL;
 	}
 	
 	public AffineTransform getTransformation() {
@@ -37,7 +46,7 @@ public class Camera {
 		
 		transform.scale(zoom, zoom);
 		
-		transform.rotate(focus.getRotation());
+		transform.rotate(getRotation());
 		
 		t = focus.getPosition();
 		transform.translate(-t.getX(), -t.getY());
@@ -49,10 +58,15 @@ public class Camera {
 		
 		AffineTransform transform = getTransformation();
 		transform.translate(p.getPos().x, p.getPos().y);
-		transform.rotate(-focus.getRotation());
+		transform.rotate(-getRotation());
 		transform.scale(1/zoom, 1/zoom);
 		
 		return transform;
+	}
+	
+	private double getRotation() {
+		
+		return focus.getRotation(view);
 	}
 	
 	public AffineTransform getNoScaleTransformation(Physical p) {
@@ -134,6 +148,20 @@ public class Camera {
 		zoom = Math.pow(10, ((double) zoomTicks) / 10);
 	}
 	
+	public void toggleView() {
+		
+		switch (view) {
+		case AQUIRE_ROTATED:
+			view = View.NORMAL;
+			break;
+		case NORMAL:
+			view = View.AQUIRE_ROTATED;
+			break;
+		default:
+			break;
+		}
+		
+	}
 	
 	
 }

@@ -9,6 +9,7 @@ import com.ntobler.space.CustomGraphics;
 import com.ntobler.space.Geometry;
 import com.ntobler.space.Orbit;
 import com.ntobler.space.Workspace;
+import com.ntobler.space.render.Camera.View;
 import com.ntobler.space.render.Focusable;
 import com.ntobler.space.utility.FuelTank;
 import com.ntobler.space.utility.HitPointHolder;
@@ -199,14 +200,30 @@ public class Ship extends RotablePhysical implements Focusable {
 	}
 
 	@Override
-	public double getRotation() {
+	public double getRotation(View view) {
 
-		if (lockOn != null) {
-			return 0;//Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+		double rotation = 0;
+		
+		switch (view) {
+		case AQUIRE_ROTATED:
+
+			if (lockOn != null) {
+				rotation = Geometry.getDirection(getPos(), lockOn.getPos()).getAngle();
+			}
+			else {
+				rotation = 0;
+			}
+			
+			break;
+		case NORMAL:
+			rotation = 0;
+			break;
+		default:
+			break;
 		}
-		else {
-			return 0;
-		}
+		
+		return rotation;
+		
 	}
 	
 	public int hitColisionDamage(Physical trigger) {

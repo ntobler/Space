@@ -262,4 +262,13 @@ public class Game {
 		};
 	}
 	
+	public ControlEvent getToggleViewControl(){
+		return new ControlEvent(){
+			@Override
+			public void onStateAction(boolean state){
+				if (state) camera.toggleView();
+			}
+		};
+	}
+	
 }
